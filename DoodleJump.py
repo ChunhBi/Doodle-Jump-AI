@@ -222,7 +222,7 @@ class DoodleJump():
             pygame.display.update()
             
 
-
-DoodleJump().run()
+if __name__ == "__main__":
+    DoodleJump().run()
 
         
