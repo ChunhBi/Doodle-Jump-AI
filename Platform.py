@@ -9,10 +9,13 @@ class Platform():
         self.blue = pygame.transform.scale(pygame.image.load("assets/blue.png"), (80,25)).convert_alpha()                # Blue Moving Platform
         self.red = pygame.transform.scale(pygame.image.load("assets/red.png"), (80,25)).convert_alpha()                 # Red Fragile Platform
         self.red_1 = pygame.transform.scale(pygame.image.load("assets/redBroken.png"), (80,25)).convert_alpha()         # Red Broken Platform
+        self.spring = pygame.transform.scale(pygame.image.load("assets/spring.png"), (25,25)).convert_alpha()           # Spring
+        self.spring_1 = pygame.transform.scale(pygame.image.load("assets/spring_1.png"), (25,25)).convert_alpha()        # Spring activated
         self.x  = random.randint(0, 500)
         self.y = 0
         self.startY = -100         # Actual y
         self.broken = False
+        self.g = 0
         self.collider = pygame.Rect(self.x, self.y, self.green.get_width() - 10, self.green.get_height())
         self.hasSpring = False
         self.blueDirection = 0
@@ -63,6 +66,12 @@ class Platform():
             
             if (self.x <= 0):
                 self.blueDirection = 1
+
+    def redbreak(self):
+        self.g += 0.5
+        self.y += self.g
+        self.startY -= self.g
+
 
         
 

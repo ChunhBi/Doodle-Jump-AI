@@ -16,7 +16,7 @@ class GeneticAlgorithm():
         
         if (bestBrain is None):
             for i in range(total):
-                self.doodler.append(Player.Player(nn.NeuralNetwork(5,4,3)))
+                self.doodler.append(Player.Player(nn.NeuralNetwork(5,4,3)))  #人物添加
         else:
             for i in range(total):
                 self.doodler.append(Player.Player(bestBrain))

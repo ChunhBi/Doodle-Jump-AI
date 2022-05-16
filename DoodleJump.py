@@ -18,15 +18,16 @@ class DoodleJump():
         pygame.font.init()
         self.score = 0
         self.font = pygame.font.SysFont("Arial", 25)                           
-        self.green = pygame.transform.scale(pygame.image.load("assets/green.png"), (80,25)).convert_alpha() # Green Platform
-        self.blue = pygame.transform.scale(pygame.image.load("assets/blue.png"), (80,25)).convert_alpha()                # Blue Moving Platform
-        self.red = pygame.transform.scale(pygame.image.load("assets/red.png"), (80,25)).convert_alpha()                 # Red Fragile Platform
-        self.red_1 = pygame.transform.scale(pygame.image.load("assets/redBroken.png"), (80,40)).convert_alpha()         # Red Broken Platform
-        self.spring = pygame.transform.scale(pygame.image.load("assets/spring.png"), (25,25)).convert_alpha()           # Spring
-        self.spring_1 = pygame.transform.scale(pygame.image.load("assets/spring_1.png"), (25,25)).convert_alpha()        # Spring activated
+        # self.green = pygame.transform.scale(pygame.image.load("assets/green.png"), (80,25)).convert_alpha() # Green Platform
+        # self.blue = pygame.transform.scale(pygame.image.load("assets/blue.png"), (80,25)).convert_alpha()                # Blue Moving Platform
+        # self.red = pygame.transform.scale(pygame.image.load("assets/red.png"), (80,25)).convert_alpha()                 # Red Fragile Platform
+        # self.red_1 = pygame.transform.scale(pygame.image.load("assets/redBroken.png"), (80,40)).convert_alpha()         # Red Broken Platform
+        # self.spring = pygame.transform.scale(pygame.image.load("assets/spring.png"), (25,25)).convert_alpha()           # Spring
+        # self.spring_1 = pygame.transform.scale(pygame.image.load("assets/spring_1.png"), (25,25)).convert_alpha()        # Spring activated
         self.gravity = 0
         self.camera = 0
         self.platforms = []
+        self.springs=[]
         self.generation = 1
         self.time = time.time()
         self.startY = -100
@@ -46,7 +47,7 @@ class DoodleJump():
                 self.screen.blit(player.playerRight, (player.x, player.y - self.camera))
         
         else:
-            if (player.jump):
+            if (player.jump>0):
                 self.screen.blit(player.playerLeft_1, (player.x, player.y - self.camera))
             else:
                 self.screen.blit(player.playerLeft, (player.x, player.y - self.camera))
@@ -72,7 +73,8 @@ class DoodleJump():
     def drawplatforms(self):
         for p in self.platforms:
             y = p.y - self.camera
-            if (y > H):
+            # print(y)
+            if (y > H and p.broken == False):
                 self.generateplatforms(False)
                 self.platforms.pop(0)
                 self.score += 10
@@ -80,7 +82,11 @@ class DoodleJump():
 
              # Blue Platform movement
             if (p.kind == 1):
-                p.blueMovement(self.score)    
+                p.blueMovement(self.score)
+            if (p.kind == 2):
+                if (p.broken == True):
+                    # print("break")
+                    p.redbreak()
 
             if (p.kind == 0):
                 self.screen.blit(p.green, (p.x, p.y - self.camera))
@@ -91,17 +97,18 @@ class DoodleJump():
                     self.screen.blit(p.red, (p.x, p.y - self.camera))
                 else:
                     self.screen.blit(p.red_1, (p.x, p.y - self.camera))
+
    
     def generateplatforms(self,initial):
         y = 900                     # Generate from bottom of the screen
         start = -100
-        if (initial == True):
+        if (initial == True):           #start the game
             self.startY = -100
             # Fill starting screen with platforms
 
             while (y > -70):
                 p = Platform.Platform()
-                p.getKind(self.score)
+                p.getKind(self.score)    #0
                 p.y = y
                 p.startY = start
                 self.platforms.append(p)
@@ -137,13 +144,13 @@ class DoodleJump():
     def run(self):
         background_image = pygame.image.load('assets/background.png')
         clock = pygame.time.Clock()
-        TOTAL = 250
+        TOTAL = 250                                           #250 players
         savedDoodler = []
         GA = ga.GeneticAlgorithm()
         doodler = GA.populate(TOTAL, None)
             
             
-        run = True
+        run = True                                             #start game
         self.generateplatforms(True)
         highestScore = 0
         while run:
@@ -156,7 +163,7 @@ class DoodleJump():
                     run = False
             currentTime = time.time()
             
-            # Clear when stuck 
+            # Clear when stuck              卡死的时候
             if (currentTime - self.time > 15):
                 self.time = time.time()
                 for d in doodler:
@@ -164,8 +171,8 @@ class DoodleJump():
                     d.fitnessExpo()
                 doodler.clear()
 
-            # When all doodlers are dead, create new generation
-            if(len(doodler) == 0 ):   
+            # When all doodlers are dead, create new generation    可以先不用管
+            if(len(doodler) == 0 ):
                 self.camera = 0
                 self.time = time.time()
                 self.score = 0
@@ -177,7 +184,7 @@ class DoodleJump():
                     print("RESET")
                     self.generation = 0
                     doodler = GA.populate(TOTAL, None)
-                    
+
                 else:
                     self.generation += 1
                     GA.nextGeneration(TOTAL, savedDoodler)
@@ -202,7 +209,7 @@ class DoodleJump():
                     savedDoodler.append(d)
                     doodler.remove(d)
 
-            if(self.score > highestScore):
+            if(self.score > highestScore):#update score
                 highestScore = self.score
             
             
