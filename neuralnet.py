@@ -53,7 +53,7 @@ class NeuralNetwork():
         self.bias3 = vmutate(self.bias3)
     
     def clone(self):
-        cloneBrain = NeuralNetwork(self.input_nodes, self.hidden_nodes, self.output_nodes)
+        cloneBrain = NeuralNetwork(self.input_nodes, self.hidden_nodes, self.hidden_nodes2, self.output_nodes)
         cloneBrain.weights1 = self.weights1
         cloneBrain.weights2 = self.weights2
         cloneBrain.weights3 = self.weights3
