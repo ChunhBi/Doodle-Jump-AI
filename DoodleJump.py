@@ -59,6 +59,7 @@ class DoodleJump():
         for p in self.platforms:
             rect = pygame.Rect(p.x + 10, p.y, p.green.get_width() - 25, p.green.get_height() - 20)
             playerCollider = pygame.Rect(player.x, player.y, player.playerRight.get_width() - 10, player.playerRight.get_height())
+            springrect = pygame.Rect(p.x+p.spring_x + 10, p.y -20, p.spring.get_width(), p.spring.get_height())
             
             
             if (rect.colliderect(playerCollider) and player.gravity > 0 and player.y < (p.y - self.camera)):
@@ -68,6 +69,12 @@ class DoodleJump():
                     player.gravity = 0
                 else:
                     p.broken = True
+
+            if (p.hasSpring == True and springrect.colliderect(playerCollider) and player.gravity > 0 and player.y < (p.y - self.camera)):
+                player.jump = 30
+                player.gravity = 0
+                p.spring_used = True
+
 
     # Draw generated platforms
     def drawplatforms(self):
@@ -90,6 +97,11 @@ class DoodleJump():
 
             if (p.kind == 0):
                 self.screen.blit(p.green, (p.x, p.y - self.camera))
+                if (p.hasSpring == True):
+                    if (p.spring_used == False):
+                        self.screen.blit(p.spring, (p.x+p.spring_x, p.y - self.camera-20))
+                    else:
+                        self.screen.blit(p.spring_1, (p.x + p.spring_x, p.y - self.camera - 20))
             elif (p.kind == 1):
                 self.screen.blit(p.blue, (p.x, p.y - self.camera))
             elif (p.kind == 2):
@@ -97,6 +109,8 @@ class DoodleJump():
                     self.screen.blit(p.red, (p.x, p.y - self.camera))
                 else:
                     self.screen.blit(p.red_1, (p.x, p.y - self.camera))
+
+
 
    
     def generateplatforms(self,initial):
@@ -109,6 +123,7 @@ class DoodleJump():
             while (y > -70):
                 p = Platform.Platform()
                 p.getKind(self.score)    #0
+                p.checkSpring()
                 p.y = y
                 p.startY = start
                 self.platforms.append(p)
@@ -132,6 +147,7 @@ class DoodleJump():
             self.startY += difficulty
             p.startY = self.startY
             p.getKind(self.score)
+            p.checkSpring()
             self.platforms.append(p)
 
     def update(self):

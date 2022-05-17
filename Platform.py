@@ -12,6 +12,8 @@ class Platform():
         self.spring = pygame.transform.scale(pygame.image.load("assets/spring.png"), (25,25)).convert_alpha()           # Spring
         self.spring_1 = pygame.transform.scale(pygame.image.load("assets/spring_1.png"), (25,25)).convert_alpha()        # Spring activated
         self.x  = random.randint(0, 500)
+        self.spring_x = 0
+        self.spring_used = False
         self.y = 0
         self.startY = -100         # Actual y
         self.broken = False
@@ -48,6 +50,7 @@ class Platform():
         chance = random.randint(0, 100)
         if (chance > 90 and self.kind == 0):
             self.hasSpring = True
+            self.spring_x = random.randint(0, 55)
 
     def blueMovement(self, score):
         x = 0
