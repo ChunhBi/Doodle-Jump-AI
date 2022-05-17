@@ -1,6 +1,7 @@
 import math
 import pygame
 import neuralnet as nn
+import numpy as np
 
 
 
@@ -84,7 +85,7 @@ class Player():
             self.x = 650
     
     # Ai Part
-    def think(self, platforms):
+    def think(self, platforms, monsters):
         coordinatesUp = self.getPlatformAbove(platforms)
         coordinatesDown = self.getPlatformBelow(platforms)
         inputs = []
@@ -95,9 +96,9 @@ class Player():
         inputs.append(vision[3])
 
         #inputs.append(self.x/600)                   # Player X value
-        inputs.append(coordinatesUp - self.x/600-self.x)         # X value of platform above
-        inputs.append(coordinatesDown - self.x/600 -self.x)         # X value of platform below
-        
+        inputs.append(min(coordinatesUp - 2*self.xvel -self.x, 700 + self.x +2*self.xvel - coordinatesUp))         # X value of platform above
+        inputs.append(min(coordinatesDown - 2*self.xvel -self.x, 700 + self.x +2*self.xvel - coordinatesDown))         # X value of platform below
+        inputs+=[monsters[0].x + monsters[0].vel if len(monsters) !=0  else 2333]
         output = self.brain.feedForward(inputs).tolist()     
 
         index = output.index(max(output))
@@ -112,12 +113,14 @@ class Player():
             
     # Retrieve X value of platform below player
     def getPlatformBelow(self,platforms):
-        maxX = 0
-        for p in platforms:
-            if (self.startY > p.startY):
-                if (p.kind != 2):
-                    maxX = p.x + p.vel
-        return maxX
+        # maxX = 0
+        # for p in platforms:
+        #     if (self.startY > p.startY):
+        #         if (p.kind != 2):
+        #             maxX = p.x + p.vel
+        # return maxX
+        avgX = np.mean([p.x for p in platforms if p.kind != 2])
+        return avgX
 
     def fitnessExpo(self):
         self.fitness = self.fitness**2

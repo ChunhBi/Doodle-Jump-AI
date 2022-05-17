@@ -8,7 +8,7 @@ import neuralnet as nn
 
 class GeneticAlgorithm():
     def __init__(self):
-        self.best = Player.Player(nn.NeuralNetwork(5,4,4,3))
+        self.best = Player.Player(nn.NeuralNetwork(6,4,3))
         self.doodler = []
         self.bestFitness = 0
 
@@ -16,7 +16,7 @@ class GeneticAlgorithm():
         
         if (bestBrain is None):
             for i in range(total):
-                self.doodler.append(Player.Player(nn.NeuralNetwork(5,4,4,3)))  #人物添加
+                self.doodler.append(Player.Player(nn.NeuralNetwork(6,4,3)))  #人物添加
         else:
             for i in range(total):
                 self.doodler.append(Player.Player(bestBrain))
@@ -62,7 +62,7 @@ class GeneticAlgorithm():
     # Select the best one of the generation and put into next generation
     def bestOne(self, array):
         max = 0
-        currentBest = Player.Player(nn.NeuralNetwork(5,4,4,3))
+        currentBest = Player.Player(nn.NeuralNetwork(6,4,3))
 
         for b in array:
             if (b.fitness >= max):

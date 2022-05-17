@@ -247,7 +247,7 @@ class DoodleJump():
 
             for d in doodler:
                 d.fitness = self.score
-                d.move(d.think(self.platforms))
+                d.move(d.think(self.platforms,self.monsters))
                 self.drawPlayer(d)
                 self.playerUpdate(d)
                 self.updateplatforms(d)
@@ -272,7 +272,7 @@ class DoodleJump():
     def play(self):
         background_image = pygame.image.load('assets/background.png')
         clock = pygame.time.Clock()
-        doodler = Player.Player(nn.NeuralNetwork(5,4,4,3))
+        doodler = Player.Player(nn.NeuralNetwork(6,4,3))
         doodler.ai = false
 
         run = True  # start game
@@ -290,7 +290,7 @@ class DoodleJump():
             self.update()
 
             d = doodler
-            d.move(d.think(self.platforms))
+            d.move(d.think(self.platforms,self.monsters))
             self.drawPlayer(d)
             self.playerUpdate(d)
             self.updateplatforms(d)
