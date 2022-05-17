@@ -108,7 +108,7 @@ class Player():
         for p in platforms:
             if (self.startY < p.startY):
                 if (p.kind != 2):
-                    return p.x
+                    return (p.x + p.vel)
             
     # Retrieve X value of platform below player
     def getPlatformBelow(self,platforms):
@@ -116,7 +116,7 @@ class Player():
         for p in platforms:
             if (self.startY > p.startY):
                 if (p.kind != 2):
-                    maxX = p.x
+                    maxX = p.x + p.vel
         return maxX
 
     def fitnessExpo(self):
