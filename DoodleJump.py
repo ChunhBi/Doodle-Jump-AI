@@ -1,5 +1,7 @@
 import pygame
 import random
+
+from sqlalchemy import false
 import Platform
 import neuralnet as nn
 import Player
@@ -60,12 +62,12 @@ class DoodleJump():
                 mrect = pygame.Rect(m.x , m.y, m.blackhole.get_width() - 25, m.blackhole.get_height() - 20)
                 if (mrect.colliderect(playerCollider) and m.kind != 2):
                     player.alive = False
-                    print("die")
+                    # print("die")
             elif m.kind == 1:
                 mrect = pygame.Rect(m.x, m.y, m.moveMonster_1.get_width() - 25, m.moveMonster_1.get_height() - 20)
                 if (mrect.colliderect(playerCollider) and m.kind != 2):
                     player.alive = False
-                    print("die")
+                    # print("die")
 
 
         for p in self.platforms:
@@ -266,6 +268,42 @@ class DoodleJump():
 
             pygame.display.update()
 
+    def play(self):
+        background_image = pygame.image.load('assets/background.png')
+        clock = pygame.time.Clock()
+        doodler = Player.Player(nn.NeuralNetwork(5,4,4,3))
+        doodler.ai = false
+
+        run = True  # start game
+        self.generateplatforms(True)
+        highestScore = 0
+        while run:
+            self.screen.fill((255, 255, 255))
+            self.screen.blit(background_image, [0, 0])
+            clock.tick(60)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
+
+            self.update()
+
+            d = doodler
+            d.move(d.think(self.platforms))
+            self.drawPlayer(d)
+            self.playerUpdate(d)
+            self.updateplatforms(d)
+
+            if (self.score > highestScore):  # update score
+                highestScore = self.score
+
+            # self.screen.blit(self.font.render("Count: " + str(len(doodler)), -1, (0, 0, 0)), (25, 120))
+            self.screen.blit(self.font.render("High Score: " + str(highestScore), -1, (0, 0, 0)), (25, 90))
+
+            pygame.display.update()
+
+
 
 if __name__ == "__main__":
-    DoodleJump().run()
+    # DoodleJump().run()
+    DoodleJump().play()
