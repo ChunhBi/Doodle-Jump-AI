@@ -35,7 +35,7 @@ class NeuralNetwork():
                 if (rand > 1):
                     rand = rand - int(rand)
                 elif (rand < -1):
-                    rand = rand + int(rand)
+                    rand = rand - int(rand)
 
                 return rand
             else:

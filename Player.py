@@ -96,20 +96,32 @@ class Player():
         inputs.append(vision[3])
 
         #inputs.append(self.x/600)                   # Player X value
-        inputs.append(min(coordinatesUp - 2*self.xvel -self.x, 700 + self.x +2*self.xvel - coordinatesUp))         # X value of platform above
-        inputs.append(min(coordinatesDown - 2*self.xvel -self.x, 700 + self.x +2*self.xvel - coordinatesDown))         # X value of platform below
+        xup=coordinatesUp - 2*self.xvel -self.x
+        xdown = coordinatesDown - 2*self.xvel -self.x
+        inputs.append(xup%700 if xup%700<abs(xup%700-700) else xup%700-700)         # X value of platform above
+        inputs.append(xdown%700 if xdown%700<abs(xdown%700-700) else xdown%700-700)         # X value of platform below
         inputs+=[monsters[0].x + monsters[0].vel if len(monsters) !=0  else 2333]
         output = self.brain.feedForward(inputs).tolist()     
 
         index = output.index(max(output))
+        if index == 2:
+            index = np.random.randint(3)
         return index
 
     # Retrieve X value of platform above player
     def getPlatformAbove(self,platforms):
         for p in platforms:
-            if (self.startY < p.startY):
-                if (p.kind != 2):
-                    return (p.x + p.vel)
+            if self.jump > 10:
+                if (self.startY < p.startY):
+                    if (p.kind != 2):
+                        return (p.x + p.vel)
+            else:
+                maxX = 0
+                for p in platforms:
+                    if (self.startY > p.startY):
+                        if (p.kind != 2):
+                            maxX = p.x + p.vel
+                return maxX
             
     # Retrieve X value of platform below player
     def getPlatformBelow(self,platforms):
@@ -119,7 +131,7 @@ class Player():
         #         if (p.kind != 2):
         #             maxX = p.x + p.vel
         # return maxX
-        avgX = np.mean([p.x for p in platforms if p.kind != 2])
+        avgX = np.mean([p.x + p.vel for p in platforms if p.kind != 2])
         return avgX
 
     def fitnessExpo(self):
