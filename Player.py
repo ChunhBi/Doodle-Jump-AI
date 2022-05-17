@@ -21,6 +21,7 @@ class Player():
         self.gravity = 0
         self.ai = True
         self.fitness = 0
+        self.alive = True
 
     
     def move(self, decision):
