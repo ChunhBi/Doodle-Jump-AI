@@ -74,6 +74,7 @@ class DoodleJump():
             rect = pygame.Rect(p.x + 10, p.y, p.green.get_width() - 25, p.green.get_height() - 20)
             springrect = pygame.Rect(p.x + p.spring_x + 10, p.y - 20, p.spring.get_width(), p.spring.get_height())
             # print(player.alive)
+            p.spring_used = False
             if (rect.colliderect(playerCollider) and player.gravity > 0 and player.y < (p.y - self.camera)):
                 # jump when landing on green or blue
                 if (p.kind != 2 and player.alive == True):
@@ -306,4 +307,4 @@ class DoodleJump():
 
 if __name__ == "__main__":
     # DoodleJump().run()
-    DoodleJump().play()
+    DoodleJump().run()
