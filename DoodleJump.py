@@ -1,6 +1,6 @@
 import pygame
 import random
-
+import numpy as np
 from sqlalchemy import false
 import Platform
 import neuralnet as nn
@@ -193,14 +193,32 @@ class DoodleJump():
         self.screen.blit(self.font.render("Score: " + str(self.score), -1, (0, 0, 0)), (25, 25))
         self.screen.blit(self.font.render("Generation: " + str(self.generation), -1, (0, 0, 0)), (25, 60))
 
+    def loadFtxt(self,file,inputnodes:int,hiddennodes:int,outputnodes:int):
+        strr = file.read(-1)
+        strr=strr.replace("array","np.array")
+        # print(strr)
+        l = eval(strr)
+        cloneBrain = nn.NeuralNetwork(inputnodes, hiddennodes, outputnodes)
+        cloneBrain.weights1 = l[0]
+        cloneBrain.weights2 = l[1]
+        cloneBrain.bias1 = l[2]
+        cloneBrain.bias2 = l[3]
+        return cloneBrain
+
     # Run game
-    def run(self):
+    def run(self, load = True):
         background_image = pygame.image.load('assets/background.png')
         clock = pygame.time.Clock()
         TOTAL = 250 # 250 players
         savedDoodler = []
         GA = ga.GeneticAlgorithm()
-        doodler = GA.populate(TOTAL, None)
+        if load==True:
+            loadbrain = open("latestbrain.txt","r")
+            brainloaded = self.loadFtxt(loadbrain,6,4,3)
+            doodler = GA.populate(TOTAL, brainloaded)
+        else:
+            doodler = GA.populate(TOTAL, None)
+        
 
         run = True  # start game
         self.generateplatforms(True)
@@ -303,8 +321,10 @@ class DoodleJump():
 
             pygame.display.update()
 
+    
+
 
 
 if __name__ == "__main__":
     # DoodleJump().run()
-    DoodleJump().run()
+    DoodleJump().run(True) ################ to load a brain, choose True

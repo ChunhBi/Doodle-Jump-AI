@@ -98,8 +98,8 @@ class Player():
         #inputs.append(self.x/600)                   # Player X value
         xup=coordinatesUp - 2*self.xvel -self.x
         xdown = coordinatesDown - 2*self.xvel -self.x
-        inputs.append(xup%700 if xup%700<abs(xup%700-700) else xup%700-700)         # X value of platform above
-        inputs.append(xdown%700 if xdown%700<abs(xdown%700-700) else xdown%700-700)         # X value of platform below
+        inputs.append(xup%600 if xup%600<abs(xup%600-600) else xup%600-600)         # X value of platform above
+        inputs.append(xdown%600 if xdown%600<abs(xdown%600-600) else xdown%600-600)         # X value of platform below
         inputs+=[monsters[0].x + monsters[0].vel if len(monsters) !=0  else 2333]
         output = self.brain.feedForward(inputs).tolist()     
 
@@ -111,7 +111,7 @@ class Player():
     # Retrieve X value of platform above player
     def getPlatformAbove(self,platforms):
         for p in platforms:
-            if self.jump > 10:
+            if self.jump > 5:
                 if (self.startY < p.startY):
                     if (p.kind != 2):
                         return (p.x + p.vel)
@@ -125,14 +125,14 @@ class Player():
             
     # Retrieve X value of platform below player
     def getPlatformBelow(self,platforms):
-        # maxX = 0
-        # for p in platforms:
-        #     if (self.startY > p.startY):
-        #         if (p.kind != 2):
-        #             maxX = p.x + p.vel
+        maxX = 0
+        for p in platforms:
+            if (self.startY > p.startY):
+                if (p.kind != 2):
+                    maxX = p.x + p.vel
         # return maxX
         avgX = np.mean([p.x + p.vel for p in platforms if p.kind != 2])
-        return avgX
+        return (avgX + maxX)/2
 
     def fitnessExpo(self):
         self.fitness = self.fitness**2
