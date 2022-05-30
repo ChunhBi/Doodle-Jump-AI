@@ -6,9 +6,9 @@ class Monster():
 
     def __init__(self):
         self.kind = 0
-        self.blackhole = pygame.transform.scale(pygame.image.load("assets/blackhole.png"), (100, 100)).convert_alpha()
-        self.moveMonster_1 = pygame.transform.scale(pygame.image.load("assets/monster_1.png"), (70, 70)).convert_alpha()
-        self.moveMonster_2 = pygame.transform.scale(pygame.image.load("assets/monster_2.png"), (70, 70)).convert_alpha()
+        self.blackhole = pygame.transform.scale(pygame.image.load("assets/blackhole.png"), (60, 60)).convert_alpha()
+        self.moveMonster_1 = pygame.transform.scale(pygame.image.load("assets/monster_1.png"), (50, 50)).convert_alpha()
+        self.moveMonster_2 = pygame.transform.scale(pygame.image.load("assets/monster_2.png"), (50, 50)).convert_alpha()
         self.x = random.randint(0, 500)
         self.originX = self.x
         self.y = 0
@@ -18,10 +18,10 @@ class Monster():
 
     def getKind(self, score):
         chance = random.randint(0, 100)
-        if (score < 200 ):
+        if (score < 200):
             self.kind = 2
             self.vel = 0
-        elif (score < 1500 ):
+        elif (score < 1500):
             if (chance < 2):
                 self.kind = 0
                 self.vel = 0
@@ -58,7 +58,6 @@ class Monster():
         max_x = self.originX + 50
         min_x = self.originX - 50
         x = 0
-        
 
         if (self.monsterDirection > 0):
             x += self.vel
