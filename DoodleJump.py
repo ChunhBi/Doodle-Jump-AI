@@ -1,7 +1,6 @@
 import pygame
 import random
 import numpy as np
-from sqlalchemy import false
 import Platform
 import neuralnet as nn
 import Player
@@ -291,7 +290,7 @@ class DoodleJump():
         background_image = pygame.image.load('assets/background.png')
         clock = pygame.time.Clock()
         doodler = Player.Player(nn.NeuralNetwork(6,4,3))
-        doodler.ai = false
+        doodler.ai = False
 
         run = True  # start game
         self.generateplatforms(True)
