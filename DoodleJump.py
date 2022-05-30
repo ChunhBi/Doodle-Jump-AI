@@ -326,5 +326,5 @@ class DoodleJump():
 
 
 if __name__ == "__main__":
-    # DoodleJump().run()
+    # DoodleJump().play()
     DoodleJump().run(True) ################ to load a brain, choose True

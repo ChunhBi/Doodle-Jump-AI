@@ -1,3 +1,4 @@
+from turtle import clone
 import numpy as np
 import random
 
@@ -52,13 +53,16 @@ class NeuralNetwork():
         cloneBrain.weights2 = self.weights2
         cloneBrain.bias1 = self.bias1
         cloneBrain.bias2 = self.bias2
-        savBrain = open("brain.txt","a+")
-        savBrain.write(str([self.weights1,self.weights2,self.bias1,self.bias2])+'\n')
-        savBrain.close()
+        cloneBrain.saveBrain()
+        return cloneBrain
+    
+    def saveBrain(self):
+        # savBrain = open("brain.txt","a+")
+        # savBrain.write(str([self.weights1,self.weights2,self.bias1,self.bias2])+'\n')
+        # savBrain.close()
         latest = open("latestbrain.txt","w")
         latest.write(str([self.weights1,self.weights2,self.bias1,self.bias2])+'\n')
         latest.close()
-        return cloneBrain
 
 
     
