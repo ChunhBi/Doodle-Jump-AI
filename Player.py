@@ -130,9 +130,7 @@ class Player():
             if (self.startY > p.startY):
                 if (p.kind != 2):
                     maxX = p.x + p.vel
-        # return maxX
-        avgX = np.mean([p.x + p.vel for p in platforms if p.kind != 2])
-        return (avgX + maxX)/2
+        return maxX
 
     def fitnessExpo(self):
         self.fitness = self.fitness**2
