@@ -7,6 +7,7 @@ import Player
 import monster
 import ga
 import time
+import agent
 
 W = 600
 H = 800
@@ -324,10 +325,13 @@ class DoodleJump():
     def qlearning_train(self):
         clock = pygame.time.Clock()
         doodler = Player.Player()
+        # opts = {'actionFn': self.env.getPossibleActions, 'epsilon': self.epsilon, 'gamma': self.discount, 'alpha': self.learningRate}
+        # qAgent = agent.ApproximateQAgent(opts)
 
         run = True  # start game
         self.generateplatforms(True)
         highestScore = 0
+
         while run:
             self.screen.fill((255, 255, 255))
             self.screen.blit(self.background_image, [0, 0])
@@ -337,12 +341,27 @@ class DoodleJump():
                 if event.type == pygame.QUIT:
                     run = False
 
+            # respawn player
+            if doodler.alive == False:
+                self.camera = 0
+                self.time = time.time()
+                self.score = 0
+                self.platforms.clear()
+                self.generateplatforms(True)
+                
+                self.generation += 1
+                new_brain = doodler.brain
+                doodler = Player.Player(new_brain)
+
             self.update()
 
             doodler.move()
             self.drawPlayer(doodler)
             self.playerUpdate(doodler)
             self.updateplatforms(doodler)
+
+            if doodler.y - self.camera > 800:
+                doodler.alive = False
 
             if self.score > highestScore:  # update score
                 highestScore = self.score
@@ -359,4 +378,5 @@ if __name__ == "__main__":
 
 
     # Play by AI
-    DoodleJump().ga_train(True) # to load a brain, choose True
+    # DoodleJump().ga_train(True) # to load a brain, choose True
+    DoodleJump().qlearning_train()
