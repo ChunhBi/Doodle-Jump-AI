@@ -8,7 +8,7 @@ import neuralnet as nn
 
 class GeneticAlgorithm():
     def __init__(self):
-        self.best = Player.Player(nn.NeuralNetwork(6,4,3))
+        self.best = Player.Player(nn.NeuralNetwork(Player.INPUT_SIZE,Player.HIDDEN_SIZE,Player.OUTPUT_SIZE))
         self.doodler = []
         self.bestFitness = 0
 

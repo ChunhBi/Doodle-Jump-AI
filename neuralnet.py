@@ -65,4 +65,5 @@ class NeuralNetwork():
         latest.close()
 
 
+
     

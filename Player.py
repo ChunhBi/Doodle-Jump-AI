@@ -3,10 +3,13 @@ import pygame
 import neuralnet as nn
 import numpy as np
 
+INPUT_SIZE = 6
+HIDDEN_SIZE = 4
+OUTPUT_SIZE = 3
 
 
 class Player():
-    def __init__(self, brain):
+    def __init__(self, brain = None):
         pygame.sprite.Sprite.__init__(self)
         self.playerRight = pygame.transform.scale(pygame.image.load("assets/right.png"), (80,80)).convert_alpha()        # Facing Right
         self.playerRight_1 = pygame.transform.scale(pygame.image.load("assets/rightSit.png"), (80,80)).convert_alpha()   # Facing Right while launching
@@ -17,15 +20,16 @@ class Player():
         self.startY = 300
         self.direction = 0          # direction facing; 0 is right; 1 is left
         self.xvel = 0
+        self.ai = True
+        if brain is None: self.ai = False
         self.brain = brain
         self.jump = 0
         self.gravity = 0
-        self.ai = True
         self.fitness = 0
         self.alive = True
 
     
-    def move(self, decision):
+    def move(self, decision = None):
 
         if self.jump == 0:        
             self.gravity += 0.5
@@ -88,19 +92,19 @@ class Player():
     def think(self, platforms, monsters):
         coordinatesUp = self.getPlatformAbove(platforms)
         coordinatesDown = self.getPlatformBelow(platforms)
-        inputs = []
+        inputs = [0 for i in range(INPUT_SIZE)]
         vision = self.look(platforms)
         
-        inputs.append(vision[1])
-        inputs.append(vision[2])
-        inputs.append(vision[3])
+        inputs[0] = vision[1]
+        inputs[1] = vision[2]
+        inputs[2] = vision[3]
 
         #inputs.append(self.x/600)                   # Player X value
         xup=coordinatesUp - 2*self.xvel -self.x
         xdown = coordinatesDown - 2*self.xvel -self.x
-        inputs.append(xup%600 if xup%600<abs(xup%600-600) else xup%600-600)         # X value of platform above
-        inputs.append(xdown%600 if xdown%600<abs(xdown%600-600) else xdown%600-600)         # X value of platform below
-        inputs+=[monsters[0].x + monsters[0].vel if len(monsters) !=0  else 2333]
+        inputs[3] = xup%600 if xup%600<abs(xup%600-600) else xup%600-600         # X value of platform above
+        inputs[4] = xdown%600 if xdown%600<abs(xdown%600-600) else xdown%600-600         # X value of platform below
+        inputs[5] = monsters[0].x + monsters[0].vel if len(monsters) !=0  else 0
         output = self.brain.feedForward(inputs).tolist()     
 
         index = output.index(max(output))

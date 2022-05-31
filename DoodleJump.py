@@ -18,6 +18,7 @@ class DoodleJump():
         self.screen = pygame.display.set_mode((W, H))
         pygame.font.init()
         self.font = pygame.font.SysFont("Arial", 25)
+        self.background_image = pygame.image.load('assets/background.png')
         self.camera = 0
         self.startY = -100
         self.generation = 1
@@ -211,8 +212,7 @@ class DoodleJump():
         return cloneBrain
 
     # Run game
-    def run(self, load=True):
-        background_image = pygame.image.load('assets/background.png')
+    def ga_train(self, load=True):
         clock = pygame.time.Clock()
         TOTAL = 250  # 250 players
         savedDoodler = []
@@ -229,7 +229,7 @@ class DoodleJump():
         highestScore = 0
         while run:
             self.screen.fill((255, 255, 255))
-            self.screen.blit(background_image, [0, 0])
+            self.screen.blit(self.background_image, [0, 0])
             clock.tick(60)
 
             for event in pygame.event.get():
@@ -291,17 +291,15 @@ class DoodleJump():
             pygame.display.update()
 
     def play(self):
-        background_image = pygame.image.load('assets/background.png')
         clock = pygame.time.Clock()
-        doodler = Player.Player(nn.NeuralNetwork(6,4,3))
-        doodler.ai = False
+        doodler = Player.Player()
 
         run = True  # start game
         self.generateplatforms(True)
         highestScore = 0
         while run:
             self.screen.fill((255, 255, 255))
-            self.screen.blit(background_image, [0, 0])
+            self.screen.blit(self.background_image, [0, 0])
             clock.tick(60)
 
             for event in pygame.event.get():
@@ -310,11 +308,41 @@ class DoodleJump():
 
             self.update()
 
-            d = doodler
-            d.move(d.think(self.platforms, self.monsters))
-            self.drawPlayer(d)
-            self.playerUpdate(d)
-            self.updateplatforms(d)
+            doodler.move()
+            self.drawPlayer(doodler)
+            self.playerUpdate(doodler)
+            self.updateplatforms(doodler)
+
+            if self.score > highestScore:  # update score
+                highestScore = self.score
+
+            # self.screen.blit(self.font.render("Count: " + str(len(doodler)), -1, (0, 0, 0)), (25, 120))
+            self.screen.blit(self.font.render("High Score: " + str(highestScore), -1, (0, 0, 0)), (25, 90))
+
+            pygame.display.update()
+
+    def qlearning_train(self):
+        clock = pygame.time.Clock()
+        doodler = Player.Player()
+
+        run = True  # start game
+        self.generateplatforms(True)
+        highestScore = 0
+        while run:
+            self.screen.fill((255, 255, 255))
+            self.screen.blit(self.background_image, [0, 0])
+            clock.tick(60)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
+
+            self.update()
+
+            doodler.move()
+            self.drawPlayer(doodler)
+            self.playerUpdate(doodler)
+            self.updateplatforms(doodler)
 
             if self.score > highestScore:  # update score
                 highestScore = self.score
@@ -326,5 +354,9 @@ class DoodleJump():
 
 
 if __name__ == "__main__":
+    # Play by player
     # DoodleJump().play()
-    DoodleJump().run(True) ################ to load a brain, choose True
+
+
+    # Play by AI
+    DoodleJump().ga_train(True) # to load a brain, choose True
