@@ -13,6 +13,25 @@ W = 600
 H = 800
 TOTAL = 20
 
+class DoodleState():
+    def __init__(self, other = None):
+        if other is not None:
+            self.platforms = other.platforms
+            self.monsters = other.monsters
+            self.springs = other.springs
+            self.player = other.player
+        else:
+            self.platforms = []
+            self.monsters = []
+            self.springs = []
+            self.player = None
+    
+    def updateState(self,platforms,monsters,springs,player):
+        self.platforms = platforms
+        self.monsters = monsters
+        self.springs = springs
+        self.player = player
+
 
 class DoodleJump():
     def __init__(self):
@@ -34,6 +53,7 @@ class DoodleJump():
         self.platforms = []
         self.monsters = []
         self.springs = []
+        self.player = None
 
     def playerUpdate(self, player):
         # Camera follow player when jumping
@@ -325,13 +345,17 @@ class DoodleJump():
     def qlearning_train(self):
         clock = pygame.time.Clock()
         doodler = Player.Player()
-        # opts = {'actionFn': self.env.getPossibleActions, 'epsilon': self.epsilon, 'gamma': self.discount, 'alpha': self.learningRate}
-        # qAgent = agent.ApproximateQAgent(opts)
+        self.player = doodler
+        def getLegalAction(state):
+            return [0,1,2]
+        opts = {'actionFn': getLegalAction,'epsilon':0.05,'gamma':0.8,'alpha':0.2}
+        qAgent = agent.ApproximateQAgent(extractor='DoodleExtractor',**opts)
 
         run = True  # start game
         self.generateplatforms(True)
         highestScore = 0
-
+        doodleState = DoodleState()
+        
         while run:
             self.screen.fill((255, 255, 255))
             self.screen.blit(self.background_image, [0, 0])
@@ -352,13 +376,19 @@ class DoodleJump():
                 self.generation += 1
                 new_brain = doodler.brain
                 doodler = Player.Player(new_brain)
+                self.player = doodler
 
             self.update()
 
-            doodler.move()
+            tmpState = DoodleState(other=doodleState)
+            decision = qAgent.computeActionFromQValues(doodleState)
+            doodler.move(decision)
+
             self.drawPlayer(doodler)
             self.playerUpdate(doodler)
             self.updateplatforms(doodler)
+            doodleState.updateState(self.platforms,self.monsters,self.springs,self.player)
+            qAgent.update(tmpState,decision,doodleState,0)
 
             if doodler.y - self.camera > 800:
                 doodler.alive = False
@@ -378,5 +408,5 @@ if __name__ == "__main__":
 
 
     # Play by AI
-    # DoodleJump().ga_train(True) # to load a brain, choose True
-    DoodleJump().qlearning_train()
+    DoodleJump().ga_train(True)                 # to load a brain, choose True
+    # DoodleJump().qlearning_train()

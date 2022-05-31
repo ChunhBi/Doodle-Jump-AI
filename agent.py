@@ -1,4 +1,5 @@
 import random,util,time
+from featureExtractors import *
 
 class ReinforcementAgent():
     """
@@ -239,7 +240,7 @@ class ApproximateQAgent(QLearningAgent):
        and update.  All other QLearningAgent functions
        should work as is.
     """
-    def __init__(self, extractor='IdentityExtractor', **args):
+    def __init__(self, extractor='DoodleExtractor', **args):
         self.featExtractor = util.lookup(extractor, globals())()
         QLearningAgent.__init__(self, **args)
         self.weights = util.Counter()
