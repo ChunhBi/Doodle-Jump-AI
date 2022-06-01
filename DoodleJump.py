@@ -353,7 +353,7 @@ class DoodleJump():
         doodler = self.player
         def getLegalAction(state): return [0,1,2]
         # 0 is right, 1 is left, 2 is middle
-        opts = {'actionFn': getLegalAction,'epsilon':0.05,'gamma':0.8,'alpha':0.2}
+        opts = {'actionFn': getLegalAction,'epsilon':0.05,'gamma':1.0,'alpha':0.2}
         qAgent = agent.ApproximateQAgent(extractor='DoodleExtractor',**opts)
 
         run = True  # start game
@@ -396,7 +396,7 @@ class DoodleJump():
 
                 lastState = DoodleState(doodleState)
                 decision = qAgent.computeActionFromQValues(doodleState)
-                print(decision)
+                # print(decision)
                 doodler.move(decision)
                 # doodler.move()
 
@@ -404,7 +404,7 @@ class DoodleJump():
                 self.playerUpdate(doodler)
                 self.updateplatforms(doodler)
                 doodleState.updateState(self.platforms,self.monsters,self.springs,self.player)
-                qAgent.update(lastState,decision,doodleState,0)
+                qAgent.update(lastState,decision,doodleState,1)
 
                 if doodler.y - self.camera > 800:
                     doodler.alive = False
@@ -428,11 +428,13 @@ class DoodleJump():
         self.screen.blit(self.font.render("Final socre after "+str(maxGeneration)+" genrations: " + str(highestScore), -1, (0, 0, 0)), (25, 100))
         pygame.display.update()
         while True:
-            for event in pygame.event.get():
-                keys = pygame.key.get_pressed()
-                if keys[pygame.K_SPACE]:
-                    print("fin")
-                    pygame.quit()
+            if pygame.QUIT in [event.type for event in pygame.event.get()]:
+                pygame.quit()
+                break
+            # for event in pygame.event.get():
+            #     keys = pygame.key.get_pressed()
+            #     if keys[pygame.K_SPACE]:
+            #         pygame.quit()
 
 
 
@@ -445,4 +447,4 @@ if __name__ == "__main__":
 
     # Play by AI
     #DoodleJump().ga_train(True)                 # to load a brain, choose True
-    DoodleJump().qlearning_train(1)
+    DoodleJump().qlearning_train(10)

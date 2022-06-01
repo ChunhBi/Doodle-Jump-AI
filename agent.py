@@ -254,6 +254,9 @@ class ApproximateQAgent(QLearningAgent):
           where * is the dotProduct operator
         """
         "*** YOUR CODE HERE ***"
+        # print(self.weights * self.featExtractor.getFeatures(state, action))
+        # print(self.featExtractor.getFeatures(state, action))
+        # print(self.weights)
         return self.weights * self.featExtractor.getFeatures(state, action)
         # util.raiseNotDefined()
 
@@ -264,6 +267,7 @@ class ApproximateQAgent(QLearningAgent):
         "*** YOUR CODE HERE ***"
         diff = (reward + self.discount * self.computeValueFromQValues(nextState)) - self.getQValue(state, action)
         features = self.featExtractor.getFeatures(state, action)
+        # print(diff)
         for feature in features:
           self.weights[feature] += self.alpha * diff * features[feature]
         # util.raiseNotDefined()
@@ -277,4 +281,5 @@ class ApproximateQAgent(QLearningAgent):
         if self.episodesSoFar == self.numTraining:
             # you might want to print your weights here for debugging
             "*** YOUR CODE HERE ***"
+            # print(self.weights)
             pass

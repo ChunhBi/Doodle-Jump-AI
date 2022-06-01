@@ -30,7 +30,6 @@ class Player():
 
     
     def move(self, decision = None):
-
         if self.jump == 0:        
             self.gravity += 0.5
             self.y += self.gravity
@@ -88,6 +87,42 @@ class Player():
         elif self.x < -50:
             self.x = 650
     
+    def getNextPos(self, decision):
+        if self.jump == 0:
+            gravity = self.gravity + 0.5
+            yPos = self.y + gravity
+
+        elif self.jump > 0:
+            jump = self.jump - 1
+            yPos = self.y - jump
+
+        xvel = self.xvel
+        if (self.ai == True):
+            if (decision == 0):
+                if xvel < 10:
+                    xvel += 1
+
+            elif (decision == 1):
+                if xvel > -10:
+                    xvel -= 1
+                    
+            elif (decision == 2):
+                if xvel > 0:
+                    xvel -= 1
+                elif xvel < 0:
+                    xvel += 1
+        xPos = self.x + xvel
+        
+        # When at the edge of the screen go to the other side
+        if xPos > 650:
+            xPos = -50
+        elif xPos < -50:
+            xPos = 650
+        return (xPos,yPos)
+        
+    
+
+
     # Ai Part
     def think(self, platforms, monsters):
         coordinatesUp = self.getPlatformAbove(platforms)

@@ -31,6 +31,8 @@ class FeatureExtractor:
 class DoodleExtractor(FeatureExtractor):
     def getFeatures(self, state, action):
         player = state.player
+        lastX, lastY = player.x, player.y
+        player.x, player.y = player.getNextPos(action)
         monsters = state.monsters
         platforms = state.platforms
         vision = player.look(platforms)
@@ -47,4 +49,5 @@ class DoodleExtractor(FeatureExtractor):
         feats['inputs[3]'] = xup%600 if xup%600<abs(xup%600-600) else xup%600-600         # X value of platform above
         feats['inputs[4]'] = xdown%600 if xdown%600<abs(xdown%600-600) else xdown%600-600         # X value of platform below
         feats['inputs[5]'] = monsters[0].x + monsters[0].vel if len(monsters) !=0  else 0
+        player.x, player.y = lastX, lastY
         return feats
