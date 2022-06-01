@@ -388,15 +388,16 @@ class DoodleJump():
 
                 self.update()
 
-                tmpState = DoodleState(other=doodleState)
-                decision = qAgent.computeActionFromQValues(doodleState)
-                doodler.move(decision)
+                # tmpState = DoodleState(other=doodleState)
+                # decision = qAgent.computeActionFromQValues(doodleState)
+                # doodler.move(decision)
+                doodler.move()
 
                 self.drawPlayer(doodler)
                 self.playerUpdate(doodler)
                 self.updateplatforms(doodler)
                 doodleState.updateState(self.platforms,self.monsters,self.springs,self.player)
-                qAgent.update(tmpState,decision,doodleState,0)
+                # qAgent.update(tmpState,decision,doodleState,0)
 
                 if doodler.y - self.camera > 800:
                     doodler.alive = False
@@ -410,6 +411,24 @@ class DoodleJump():
 
                 pygame.display.update()
 
+        self.camera = 0
+        self.time = time.time()
+        self.score = 0
+        self.platforms.clear()
+        self.screen.fill((255, 255, 255))
+        self.screen.blit(self.background_image, [0, 0])
+        self.screen.blit(self.font.render("Final socre after "+str(maxGeneration)+" genrations: " + str(highestScore), -1, (0, 0, 0)), (25, 100))
+        pygame.display.update()
+        while True:
+            for event in pygame.event.get():
+                keys = pygame.key.get_pressed()
+                if keys[pygame.K_SPACE]:
+                    print("fin")
+                    pygame.quit()
+
+
+
+
 
 if __name__ == "__main__":
     # Play by player
@@ -418,4 +437,4 @@ if __name__ == "__main__":
 
     # Play by AI
     #DoodleJump().ga_train(True)                 # to load a brain, choose True
-    DoodleJump().qlearning_train(10)
+    DoodleJump().qlearning_train(1)
