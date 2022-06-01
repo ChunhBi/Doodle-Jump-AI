@@ -9,6 +9,9 @@ import ga
 import time
 import agent
 
+false = False
+true = True
+
 W = 600
 H = 800
 TOTAL = 20
@@ -343,11 +346,13 @@ class DoodleJump():
             pygame.display.update()
 
     def qlearning_train(self, maxGeneration = 100):
+        loadbrain = open("latestbrain.txt", "r")
+        brainloaded = self.loadFtxt(loadbrain, 6, 4, 3)
         clock = pygame.time.Clock()
-        doodler = Player.Player()
-        self.player = doodler
-        def getLegalAction(state):
-            return [0,1,2]
+        self.player = Player.Player(brainloaded)
+        doodler = self.player
+        def getLegalAction(state): return [0,1,2]
+        # 0 is right, 1 is left, 2 is middle
         opts = {'actionFn': getLegalAction,'epsilon':0.05,'gamma':0.8,'alpha':0.2}
         qAgent = agent.ApproximateQAgent(extractor='DoodleExtractor',**opts)
 
@@ -355,28 +360,29 @@ class DoodleJump():
         highestScore = 0
         doodleState = DoodleState()
         
-        for _ in range(maxGeneration):
-
+        for geneNum in range(maxGeneration):
+            if run == False: break
             self.camera = 0
             self.time = time.time()
             self.score = 0
             self.platforms.clear()
             self.generateplatforms(True)
+            doodleState.updateState(self.platforms,self.monsters,self.springs,self.player)
 
             # agent learning
-            if _ != 0:
-                new_brain = doodler.brain
-                doodler = Player.Player(new_brain)
-                self.player = doodler
+            if geneNum != 0:
+                self.player = Player.Player(doodler.brain)
+                doodler = self.player
 
-            while run:
+            while True:
                 self.screen.fill((255, 255, 255))
                 self.screen.blit(self.background_image, [0, 0])
                 clock.tick(60)
 
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        run = False
+                if pygame.QUIT in [event.type for event in pygame.event.get()]:
+                # Stop training and close the whole game 
+                    run = False
+                    break
                 currentTime = time.time()
 
                 # Clear when stuck
@@ -388,15 +394,17 @@ class DoodleJump():
 
                 self.update()
 
-                tmpState = DoodleState(other=doodleState)
+                lastState = DoodleState(doodleState)
                 decision = qAgent.computeActionFromQValues(doodleState)
+                print(decision)
                 doodler.move(decision)
+                # doodler.move()
 
                 self.drawPlayer(doodler)
                 self.playerUpdate(doodler)
                 self.updateplatforms(doodler)
                 doodleState.updateState(self.platforms,self.monsters,self.springs,self.player)
-                qAgent.update(tmpState,decision,doodleState,0)
+                qAgent.update(lastState,decision,doodleState,0)
 
                 if doodler.y - self.camera > 800:
                     doodler.alive = False

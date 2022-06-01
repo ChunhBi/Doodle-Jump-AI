@@ -31,17 +31,19 @@ class FeatureExtractor:
 class DoodleExtractor(FeatureExtractor):
     def getFeatures(self, state, action):
         player = state.player
-        print(player)
         monsters = state.monsters
         platforms = state.platforms
         vision = player.look(platforms)
+        coordinatesUp = player.getPlatformAbove(platforms)
+        coordinatesDown = player.getPlatformBelow(platforms)
+
         feats = util.Counter()
         feats['inputs[0]'] = vision[1]
         feats['inputs[1]'] = vision[2]
         feats['inputs[2]'] = vision[3]
 
-        xup=player.coordinatesUp - 2*player.xvel -player.x
-        xdown = player.coordinatesDown - 2*player.xvel -player.x
+        xup = coordinatesUp - 2*player.xvel -player.x
+        xdown = coordinatesDown - 2*player.xvel -player.x
         feats['inputs[3]'] = xup%600 if xup%600<abs(xup%600-600) else xup%600-600         # X value of platform above
         feats['inputs[4]'] = xdown%600 if xdown%600<abs(xdown%600-600) else xdown%600-600         # X value of platform below
         feats['inputs[5]'] = monsters[0].x + monsters[0].vel if len(monsters) !=0  else 0
