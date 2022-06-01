@@ -31,6 +31,7 @@ class FeatureExtractor:
 class DoodleExtractor(FeatureExtractor):
     def getFeatures(self, state, action):
         player = state.player
+        print(player)
         monsters = state.monsters
         platforms = state.platforms
         vision = player.look(platforms)

@@ -25,7 +25,7 @@ class Platform():
 
     def getKind(self, score):
         chance = random.randint(0,100)
-        if (score < 1500):
+        if (score < 5000):
             if (chance < 85):                 # 80% chance to get green platform
                 self.kind = 0            
             elif (chance < 95):               # 10% chance to get red or blue 
@@ -33,7 +33,7 @@ class Platform():
                 self.vel = 5                 
             else:
                 self.kind = 2  
-        elif (score < 2500):
+        elif (score < 10000):
             if (chance < 75):                 # 70% chance to get green platform
                 self.kind = 0            
             elif (chance < 95):               # 20% chance to get blue 

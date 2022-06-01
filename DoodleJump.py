@@ -297,8 +297,8 @@ class DoodleJump():
                 # pygame.draw.rect(self.screen, (255,0,0),(d.x + 50, d.y, 1, 800))
                 # pygame.draw.rect(self.screen, (255,0,0), (d.x-600, d.y +50, 600, 1))
 
-                if d.y - self.camera > 800:
-                    # d.fitness = self.score                     # Not sure if it matters
+                if d.y - self.camera > 800:   # doodle dead
+                    # d.fitness = self.score
                     d.fitnessExpo()
                     savedDoodler.append(d)
                     doodler.remove(d)
@@ -342,7 +342,7 @@ class DoodleJump():
 
             pygame.display.update()
 
-    def qlearning_train(self):
+    def qlearning_train(self, maxGeneration = 100):
         clock = pygame.time.Clock()
         doodler = Player.Player()
         self.player = doodler
@@ -352,54 +352,63 @@ class DoodleJump():
         qAgent = agent.ApproximateQAgent(extractor='DoodleExtractor',**opts)
 
         run = True  # start game
-        self.generateplatforms(True)
         highestScore = 0
         doodleState = DoodleState()
         
-        while run:
-            self.screen.fill((255, 255, 255))
-            self.screen.blit(self.background_image, [0, 0])
-            clock.tick(60)
+        for _ in range(maxGeneration):
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    run = False
+            self.camera = 0
+            self.time = time.time()
+            self.score = 0
+            self.platforms.clear()
+            self.generateplatforms(True)
 
-            # respawn player
-            if doodler.alive == False:
-                self.camera = 0
-                self.time = time.time()
-                self.score = 0
-                self.platforms.clear()
-                self.generateplatforms(True)
-                
-                self.generation += 1
+            # agent learning
+            if _ != 0:
                 new_brain = doodler.brain
                 doodler = Player.Player(new_brain)
                 self.player = doodler
 
-            self.update()
+            while run:
+                self.screen.fill((255, 255, 255))
+                self.screen.blit(self.background_image, [0, 0])
+                clock.tick(60)
 
-            tmpState = DoodleState(other=doodleState)
-            decision = qAgent.computeActionFromQValues(doodleState)
-            doodler.move(decision)
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        run = False
+                currentTime = time.time()
 
-            self.drawPlayer(doodler)
-            self.playerUpdate(doodler)
-            self.updateplatforms(doodler)
-            doodleState.updateState(self.platforms,self.monsters,self.springs,self.player)
-            qAgent.update(tmpState,decision,doodleState,0)
+                # Clear when stuck
+                if currentTime - self.time > 15:
+                    self.time = time.time()
+                    doodler.alive = False
+                    self.generation += 1
+                    break
 
-            if doodler.y - self.camera > 800:
-                doodler.alive = False
+                self.update()
 
-            if self.score > highestScore:  # update score
-                highestScore = self.score
+                tmpState = DoodleState(other=doodleState)
+                decision = qAgent.computeActionFromQValues(doodleState)
+                doodler.move(decision)
 
-            # self.screen.blit(self.font.render("Count: " + str(len(doodler)), -1, (0, 0, 0)), (25, 120))
-            self.screen.blit(self.font.render("High Score: " + str(highestScore), -1, (0, 0, 0)), (25, 90))
+                self.drawPlayer(doodler)
+                self.playerUpdate(doodler)
+                self.updateplatforms(doodler)
+                doodleState.updateState(self.platforms,self.monsters,self.springs,self.player)
+                qAgent.update(tmpState,decision,doodleState,0)
 
-            pygame.display.update()
+                if doodler.y - self.camera > 800:
+                    doodler.alive = False
+                    self.generation += 1
+                    break
+
+                if self.score > highestScore:  # update score
+                    highestScore = self.score
+
+                self.screen.blit(self.font.render("High Score: " + str(highestScore), -1, (0, 0, 0)), (25, 90))
+
+                pygame.display.update()
 
 
 if __name__ == "__main__":
@@ -408,5 +417,5 @@ if __name__ == "__main__":
 
 
     # Play by AI
-    DoodleJump().ga_train(True)                 # to load a brain, choose True
-    # DoodleJump().qlearning_train()
+    #DoodleJump().ga_train(True)                 # to load a brain, choose True
+    DoodleJump().qlearning_train(10)

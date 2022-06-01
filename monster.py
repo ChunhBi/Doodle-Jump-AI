@@ -21,7 +21,7 @@ class Monster():
         if (score < 200):
             self.kind = 2
             self.vel = 0
-        elif (score < 1500):
+        elif (score < 5000):
             if (chance < 2):
                 self.kind = 0
                 self.vel = 0
@@ -32,7 +32,7 @@ class Monster():
                 self.kind = 2
                 self.vel = 0
 
-        elif (score < 2500):
+        elif (score < 10000):
             if (chance < 3):
                 self.kind = 0
                 self.vel = 0
