@@ -266,10 +266,13 @@ class ApproximateQAgent(QLearningAgent):
         """
         "*** YOUR CODE HERE ***"
         diff = (reward + self.discount * self.computeValueFromQValues(nextState)) - self.getQValue(state, action)
-        features = self.featExtractor.getFeatures(state, action)
+        # print(self.computeValueFromQValues(nextState) - self.getQValue(state, action))
         # print(diff)
+        features = self.featExtractor.getFeatures(state, action)
         for feature in features:
           self.weights[feature] += self.alpha * diff * features[feature]
+        
+        # print(self.weights)
         # util.raiseNotDefined()
 
     def final(self, state):

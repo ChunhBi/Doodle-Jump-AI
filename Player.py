@@ -111,7 +111,7 @@ class Player():
                     xvel -= 1
                 elif xvel < 0:
                     xvel += 1
-        xPos = self.x + xvel
+        xPos = self.x + 2*xvel
         
         # When at the edge of the screen go to the other side
         if xPos > 650:

@@ -404,7 +404,7 @@ class DoodleJump():
                 self.playerUpdate(doodler)
                 self.updateplatforms(doodler)
                 doodleState.updateState(self.platforms,self.monsters,self.springs,self.player)
-                qAgent.update(lastState,decision,doodleState,1)
+                qAgent.update(lastState,decision,doodleState,-0.1)
 
                 if doodler.y - self.camera > 800:
                     doodler.alive = False
