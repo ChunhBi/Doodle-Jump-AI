@@ -18,6 +18,7 @@ from os import stat
 import pygame
 import DoodleJump
 import util
+import math
 
 class FeatureExtractor:
     def getFeatures(self, state, action):
@@ -36,18 +37,21 @@ class DoodleExtractor(FeatureExtractor):
         monsters = state.monsters
         platforms = state.platforms
         vision = player.look(platforms)
-        coordinatesUp = player.getPlatformAbove(platforms)
+        upPlatforms = player.getPlatformsPossible(platforms, 2)
         coordinatesDown = player.getPlatformBelow(platforms)
 
         feats = util.Counter()
-        feats['inputs[0]'] = vision[1]
-        feats['inputs[1]'] = vision[2]
-        feats['inputs[2]'] = vision[3]
+        # feats['inputs[0]'] = vision[1]
+        # feats['inputs[1]'] = vision[2]
+        # feats['inputs[2]'] = vision[3]
+        # print(abs((upPlatforms[0] - player.x)/600)+1)
+        feats['firstUpDist'] = math.log2(abs((upPlatforms[0] - player.x)/600)+1) 
+        if len(upPlatforms)>=2: 
+          feats['secondUpDist'] = math.log2(abs((upPlatforms[1] - player.x)/600)+1) 
+          if len(upPlatforms)>=3: 
+            feats['thirdUpDist'] = math.log2(abs((upPlatforms[1] - player.x)/600)+1) 
+        feats['firstDownDist'] = math.log2(abs((coordinatesDown - player.x)/600)+1) 
 
-        xup = coordinatesUp - player.x
-        xdown = coordinatesDown - player.x
-        feats['inputs[3]'] = abs(xup/600)         # X value of platform above
-        feats['inputs[4]'] = abs(xdown/600)         # X value of platform below
         # xmonster = player.getMonsterAbove(monsters)
         # if xmonster != 999:
         #   feats['monsterDist'] = abs((xmonster - player.x)/600)

@@ -113,7 +113,7 @@ class Player():
                     xvel -= 1
                 elif xvel < 0:
                     xvel += 1
-        xPos = self.x + 2*xvel
+        xPos = self.x + 1*xvel
         
         # When at the edge of the screen go to the other side
         if xPos > 650:
@@ -163,6 +163,25 @@ class Player():
                             maxX = p.x + p.vel
             return maxX
     
+    def getPlatformsPossible(self,platforms,candidateNum):
+        returnPlatforms = []
+        if self.jump > 5: # moving up, above the player
+            for p in platforms:
+                if (self.startY < p.startY): # above the player
+                    if (p.kind != 2): # not red 
+                        if (abs(p.x + p.vel - self.x) < 400): # not too far
+                            returnPlatforms.append(p.x + p.vel)
+                            if len(returnPlatforms)==candidateNum: break
+            return returnPlatforms
+        else:# falling, below the player
+            for p in platforms:
+                if (self.startY > p.startY):
+                    if (p.kind != 2):
+                        if (abs(p.x + p.vel - self.x) < 400):
+                            returnPlatforms.append(p.x + p.vel)
+            if len(returnPlatforms)==0: return[0]
+            return returnPlatforms[-1:-1-candidateNum:-1]
+
     def getMonsterAbove(self,monsters):
         if len(monsters)==0: return 999
         if self.jump > 5: # moving up, above the player
@@ -191,7 +210,6 @@ class Player():
 
     def fitnessExpo(self):
         self.fitness = self.fitness**2
-
 
     # Player looks from 8 directions to find platforms
     def look(self, platforms):
