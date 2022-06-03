@@ -244,11 +244,11 @@ class DoodleJump():
     # Run game
     def ga_train(self, load=True):
         clock = pygame.time.Clock()
-        TOTAL = 250  # 250 players
+        TOTAL = 100  # 250 players
         savedDoodler = []
         GA = ga.GeneticAlgorithm()
         if load:
-            loadbrain = open("latestbrain.txt", "r")
+            loadbrain = open("highestbrain.txt", "r")
             brainloaded = self.loadFtxt(loadbrain, 6, 4, 3)
             doodler = GA.populate(TOTAL, brainloaded)
         else:
@@ -314,6 +314,10 @@ class DoodleJump():
 
             if self.score > highestScore:  # update score
                 highestScore = self.score
+                highest = open("highestbrain.txt","w")
+                nbestdoodler = savedDoodler[len(savedDoodler)-1]
+                highest.write(str([nbestdoodler.brain.weights1,nbestdoodler.brain.weights2,nbestdoodler.brain.bias1,nbestdoodler.brain.bias2])+'\n')
+                highest.close()
 
             self.screen.blit(self.font.render("Count: " + str(len(doodler)), -1, (0, 0, 0)), (25, 120))
             self.screen.blit(self.font.render("High Score: " + str(highestScore), -1, (0, 0, 0)), (25, 90))
@@ -452,5 +456,5 @@ if __name__ == "__main__":
 
 
     # Play by AI
-    #DoodleJump().ga_train(True)                 # to load a brain, choose True
-    DoodleJump().qlearning_train(10)
+    DoodleJump().ga_train(False)                 # to load a brain, choose True
+    # DoodleJump().qlearning_train(10)

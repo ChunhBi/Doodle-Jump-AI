@@ -15,6 +15,55 @@ class NeuralNetwork():
         self.bias1 = 2* np.random.random((self.hidden_nodes)) -1
         self.bias2 = 2* np.random.random((self.output_nodes)) -1
 
+    def changeelement(self, elem:str, size:list, coor:list, value=None):
+        if(value==None):
+            if(len(size)==1):
+                at = None
+                at = eval("self." + elem + "[" + str(coor[0]) +"]")
+                # print(at)
+                value =np.random.normal(at, 10)
+            elif len(size)==2:
+                at = None
+                at = eval("self." + elem + "[" + str(coor[0]) +"]" + "[" + str(coor[1]) +"]")
+                # print(at)
+                value =np.random.normal(at, 10)
+        if(elem == "weights1"):
+            self.weights1[coor[0]][coor[1]] = value
+        elif(elem == "weights2"):
+            self.weights2[coor[0]][coor[1]] = value
+        elif(elem == "bias1"):
+            self.bias1[coor[0]] = value
+        elif(elem == "bias2"):
+            self.bias2[coor[0]] = value
+        else:
+            pass
+        return self
+
+
+    def normalchange(self, elem:str, mat=None):
+        tempdict = {"weights1":self.weights1,"weights2":self.weights2,"bias1":self.bias1,"bias2":self.bias2}
+        if np.shape(tempdict[elem]) != np.shape(mat):
+            return self
+        else:
+            newbrain = self.copy()
+            newdict={"weights1":newbrain.weights1,"weights2":newbrain.weights2,"bias1":newbrain.bias1,"bias2":newbrain.bias2}
+            if elem in ["weights1", "weights2"]:
+                newdict[elem]+=(np.random.normal(0,10,np.shape(newdict[elem])))
+            elif elem in ["bias1", "bias2"]:
+                for i in newdict[elem]:
+                    i+=np.random.normal(0,10)
+            else:
+                pass
+            return newbrain
+
+    def copy(self):
+        newbrain = NeuralNetwork(Player.INPUT_SIZE,Player.HIDDEN_SIZE,Player.OUTPUT_SIZE)
+        newbrain.bias1 = self.bias1.copy()
+        newbrain.bias2 = self.bias2.copy()
+        newbrain.weights1 = self.weights1.copy()
+        newbrain.weights2 = self.weights2.copy()
+        return newbrain
+
     # Activation functions
     def sigmoid(self, x):
         #applying the sigmoid function

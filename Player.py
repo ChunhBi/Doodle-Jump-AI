@@ -5,7 +5,7 @@ import numpy as np
 
 INPUT_SIZE = 6
 HIDDEN_SIZE = 4
-OUTPUT_SIZE = 3
+OUTPUT_SIZE = 2
 
 
 class Player():
