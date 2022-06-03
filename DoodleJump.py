@@ -247,7 +247,8 @@ class DoodleJump():
         GA = ga.GeneticAlgorithm()
         if load:
             loadbrain = open("highestbrain.txt", "r")
-            brainloaded = self.loadFtxt(loadbrain, 6, 4, 3)
+            brainloaded = self.loadFtxt(loadbrain, Player.INPUT_SIZE, Player.HIDDEN_SIZE, Player.OUTPUT_SIZE)
+
             doodler = GA.populate(TOTAL, brainloaded)
         else:
             doodler = GA.populate(TOTAL, None)
