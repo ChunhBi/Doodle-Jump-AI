@@ -120,9 +120,6 @@ class Player():
             xPos = 650
         return (xPos,yPos)
         
-    
-
-
     # Ai Part
     def think(self, platforms, monsters):
         coordinatesUp = self.getPlatformAbove(platforms)
@@ -149,18 +146,33 @@ class Player():
 
     # Retrieve X value of platform above player
     def getPlatformAbove(self,platforms):
-        for p in platforms:
-            if self.jump > 5:
+        if self.jump > 5: # moving up, above the player
+            for p in platforms:
                 if (self.startY < p.startY):
                     if (p.kind != 2):
                         return (p.x + p.vel)
-            else:
-                maxX = 0
-                for p in platforms:
-                    if (self.startY > p.startY):
-                        if (p.kind != 2):
-                            maxX = p.x + p.vel
-                return maxX
+        else:# falling, below the player
+            maxX = 0
+            for p in platforms:
+                if (self.startY > p.startY):
+                    if (p.kind != 2):
+                        maxX = p.x + p.vel
+            return maxX
+    
+    def getMonsterAbove(self,monsters):
+        if self.jump > 5: # moving up, above the player
+            for p in monsters:
+                if (self.startY < p.startY) and (p.startY - self.startY < 300):
+                    if (p.kind != 2):
+                        return (p.x + p.vel)
+                else: return 999 # does not consider it because too far
+        else:# falling, below the player
+            maxX = 0
+            for p in monsters:
+                if (self.startY > p.startY):
+                    if (p.kind != 2):
+                        maxX = p.x + p.vel
+            return maxX
             
     # Retrieve X value of platform below player
     def getPlatformBelow(self,platforms):
