@@ -26,20 +26,21 @@ class Player():
         self.jump = 0
         self.gravity = 0
         self.fitness = 0
+        self.upORdown = -1  # 1 is up and -1 is down
         self.alive = True
 
-    
-    def move(self, decision = None):
-        if self.jump == 0:        
+    def move(self, decision=None):
+        if self.jump == 0:
             self.gravity += 0.5
             self.y += self.gravity
             self.startY -= self.gravity
+            self.upORdown = -1
 
         elif self.jump > 0:
             self.jump -= 1
             self.y -= self.jump
-            
             self.startY += self.jump
+            self.upORdown = 1
         
         # print(self.startY)
 
@@ -129,7 +130,7 @@ class Player():
         inputs = [0 for i in range(INPUT_SIZE)]
         vision = self.look(platforms)
         if coordinateMonster == -1:
-            inputs[5] = -114514
+            inputs[5] = -1
             inputs[6] = -1
         else:
             xmonster = coordinateMonster - self.x
