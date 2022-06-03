@@ -10,10 +10,15 @@ class NeuralNetwork():
         self.input_nodes = in_nodes
         self.hidden_nodes = hid_nodes
         self.output_nodes = out_nodes
-        self.weights1 = 2* np.random.random((self.input_nodes, self.hidden_nodes)) -1
-        self.weights2 = 2* np.random.random((self.hidden_nodes,self.output_nodes)) -1
-        self.bias1 = 2* np.random.random((self.hidden_nodes)) -1
-        self.bias2 = 2* np.random.random((self.output_nodes)) -1
+        self.weights1 = np.random.normal(0,1,(self.input_nodes, self.hidden_nodes))
+        self.weights2 = np.random.normal(0,1,(self.hidden_nodes,self.output_nodes))
+        self.bias1 = np.random.normal(0,1,(self.hidden_nodes))
+        self.bias2 = np.random.normal(0,1,(self.output_nodes))
+        # origin code below #
+        # self.weights1 = 2* np.random.random((self.input_nodes, self.hidden_nodes)) -1
+        # self.weights2 = 2* np.random.random((self.hidden_nodes,self.output_nodes)) -1
+        # self.bias1 = 2* np.random.random((self.hidden_nodes)) -1
+        # self.bias2 = 2* np.random.random((self.output_nodes)) -1
 
     def changeelement(self, elem:str, size:list, coor:list, value=None):
         if(value==None):
