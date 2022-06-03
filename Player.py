@@ -40,6 +40,8 @@ class Player():
             self.y -= self.jump
             
             self.startY += self.jump
+        
+        # print(self.startY)
 
         key = pygame.key.get_pressed()
         if key[pygame.K_SPACE]:
@@ -120,9 +122,6 @@ class Player():
             xPos = 650
         return (xPos,yPos)
         
-    
-
-
     # Ai Part
     def think(self, platforms, monsters):
         coordinatesUp = self.getPlatformAbove(platforms)
@@ -149,18 +148,36 @@ class Player():
 
     # Retrieve X value of platform above player
     def getPlatformAbove(self,platforms):
-        for p in platforms:
-            if self.jump > 5:
-                if (self.startY < p.startY):
+        if self.jump > 5: # moving up, above the player
+            for p in platforms:
+                if (self.startY-80 < p.startY): # above the player
+                    if (p.kind != 2): # not red 
+                        if (abs(p.x + p.vel - self.x) < 400): # not too far
+                            return (p.x + p.vel)
+        else:# falling, below the player
+            maxX = 0
+            for p in platforms:
+                if (self.startY-80 > p.startY):
+                    if (p.kind != 2):
+                        if (abs(p.x + p.vel - self.x) < 300):
+                            maxX = p.x + p.vel
+            return maxX
+    
+    def getMonsterAbove(self,monsters):
+        if len(monsters)==0: return 999
+        if self.jump > 5: # moving up, above the player
+            for p in monsters:
+                if (self.startY < p.startY) and (p.startY - self.startY < 300):
                     if (p.kind != 2):
                         return (p.x + p.vel)
-            else:
-                maxX = 0
-                for p in platforms:
-                    if (self.startY > p.startY):
-                        if (p.kind != 2):
-                            maxX = p.x + p.vel
-                return maxX
+                else: return 999 # does not consider it because too far
+        else:# falling, below the player
+            maxX = 0
+            for p in monsters:
+                if (self.startY > p.startY):
+                    if (p.kind != 2):
+                        maxX = p.x + p.vel
+            return maxX
             
     # Retrieve X value of platform below player
     def getPlatformBelow(self,platforms):
@@ -168,7 +185,8 @@ class Player():
         for p in platforms:
             if (self.startY > p.startY):
                 if (p.kind != 2):
-                    maxX = p.x + p.vel
+                    if (abs(p.x + p.vel - self.x) < 300): # not too far
+                        maxX = p.x + p.vel
         return maxX
 
     def fitnessExpo(self):

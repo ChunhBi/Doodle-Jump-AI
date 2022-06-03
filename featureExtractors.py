@@ -48,6 +48,8 @@ class DoodleExtractor(FeatureExtractor):
         xdown = coordinatesDown - player.x
         feats['inputs[3]'] = abs(xup/600)         # X value of platform above
         feats['inputs[4]'] = abs(xdown/600)         # X value of platform below
-        # feats['inputs[5]'] = (monsters[0].x + monsters[0].vel if len(monsters) !=0  else 0)
+        # xmonster = player.getMonsterAbove(monsters)
+        # if xmonster != 999:
+        #   feats['monsterDist'] = abs((xmonster - player.x)/600)
         player.x, player.y = lastX, lastY
         return feats

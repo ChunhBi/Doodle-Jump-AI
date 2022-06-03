@@ -81,9 +81,10 @@ class DoodleJump():
                 self.screen.blit(player.playerLeft, (player.x, player.y - self.camera))
 
     def updateplatforms(self, player):
-        playerCollider = pygame.Rect(player.x, player.y, player.playerRight.get_width() - 10,
+        playerCollider = pygame.Rect(player.x+15, player.y, player.playerRight.get_width()-30,
                                      player.playerRight.get_height())  # Cancel the effect of a long mouth
-
+        footCollider = pygame.Rect(player.x+10 , player.y+60, player.playerRight.get_width()-20,
+                                     player.playerRight.get_height()-60)
         # Monster colliders
         if self.danger:
             for m in self.monsters:
@@ -101,12 +102,12 @@ class DoodleJump():
 
         # Platform and spring colliders
         for p in self.platforms:
-            rect = pygame.Rect(p.x + 10, p.y, p.green.get_width() - 25, p.green.get_height() - 20)
+            # rect = pygame.Rect(p.x + 10, p.y, p.green.get_width() - 25, p.green.get_height() - 15)
+            rect = pygame.Rect(p.x + 10, p.y, p.green.get_width() - 25, 5)
             springRect = pygame.Rect(p.x + p.spring_x + 10, p.y - 20, p.spring.get_width(), p.spring.get_height())
-            # print(player.alive)
             p.spring_used = False  # spring init
 
-            if rect.colliderect(playerCollider) and player.gravity > 0 and player.y < (p.y - self.camera):
+            if rect.colliderect(footCollider) and player.gravity > 3.0 and player.y < (p.y - self.camera):
                 # jump when landing on green or blue
                 if p.kind != 2 and player.alive == True:
                     player.jump = 20
@@ -116,9 +117,9 @@ class DoodleJump():
                     p.broken = True
 
             # on springs
-            if (p.hasSpring == True and springRect.colliderect(playerCollider) and player.gravity > 0 and player.y < (
+            if (p.hasSpring == True and springRect.colliderect(footCollider) and player.gravity > 3.0 and player.y < (
                     p.y - self.camera) and player.alive == True):
-                player.jump = 25
+                player.jump = 30
                 player.gravity = 0
                 p.spring_used = True
 
@@ -143,7 +144,6 @@ class DoodleJump():
         # Platforms
         for p in self.platforms:
             y = p.y - self.camera
-            # print(y)
             if y > H and p.broken == False:
                 self.generateplatforms(False)
                 self.platforms.pop(0)
@@ -154,7 +154,6 @@ class DoodleJump():
                 p.blueMovement(self.score)
             if p.kind == 2:
                 if p.broken == True:
-                    # print("break")
                     p.redbreak()
             # Draw platforms
             if p.kind == 0:
@@ -232,7 +231,6 @@ class DoodleJump():
     def loadFtxt(self, file, inputnodes: int, hiddennodes: int, outputnodes: int):
         strr = file.read(-1)
         strr = strr.replace("array", "np.array")
-        # print(strr)
         l = eval(strr)
         cloneBrain = nn.NeuralNetwork(inputnodes, hiddennodes, outputnodes)
         cloneBrain.weights1 = l[0]
@@ -456,5 +454,5 @@ if __name__ == "__main__":
 
 
     # Play by AI
-    DoodleJump().ga_train(False)                 # to load a brain, choose True
-    # DoodleJump().qlearning_train(10)
+    # DoodleJump().ga_train(False)                 # to load a brain, choose True
+    DoodleJump().qlearning_train(10)
