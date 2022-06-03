@@ -43,6 +43,7 @@ class DoodleExtractor(FeatureExtractor):
         feats['inputs[0]'] = vision[1]
         feats['inputs[1]'] = vision[2]
         feats['inputs[2]'] = vision[3]
+        feats["upDown"] = player.upORdown
 
         xup = coordinatesUp - player.x
         xdown = coordinatesDown - player.x

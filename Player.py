@@ -26,20 +26,21 @@ class Player():
         self.jump = 0
         self.gravity = 0
         self.fitness = 0
+        self.upORdown = -1  # 1 is up and -1 is down
         self.alive = True
 
-    
-    def move(self, decision = None):
-        if self.jump == 0:        
+    def move(self, decision=None):
+        if self.jump == 0:
             self.gravity += 0.5
             self.y += self.gravity
             self.startY -= self.gravity
+            self.upORdown = -1
 
         elif self.jump > 0:
             self.jump -= 1
             self.y -= self.jump
-            
             self.startY += self.jump
+            self.upORdown = 1
         
         # print(self.startY)
 
@@ -129,7 +130,7 @@ class Player():
         inputs = [0 for i in range(INPUT_SIZE)]
         vision = self.look(platforms)
         if coordinateMonster == -1:
-            inputs[5] = -114514
+            inputs[5] = -1
             inputs[6] = -1
         else:
             xmonster = coordinateMonster - self.x
@@ -154,20 +155,21 @@ class Player():
         return index
     # Retrieve X value of platform above player
 
-
-    def getPlatformAbove(self,platforms):
-        for p in platforms:
-            if self.jump > 5:
-                if (self.startY < p.startY):
+    def getPlatformAbove(self, platforms):
+        if self.jump > 5:  # moving up, above the player
+            for p in platforms:
+                if (self.startY - 80 < p.startY):  # above the player
+                    if (p.kind != 2):  # not red
+                        if (abs(p.x + p.vel - self.x) < 300):  # not too far
+                            return (p.x + p.vel)
+        else:  # falling, below the player
+            maxX = 0
+            for p in platforms:
+                if (self.startY - 80 > p.startY):
                     if (p.kind != 2):
-                        return (p.x + p.vel)
-            else:
-                maxX = 0
-                for p in platforms:
-                    if (self.startY > p.startY):
-                        if (p.kind != 2):
+                        if (abs(p.x + p.vel - self.x) < 300):
                             maxX = p.x + p.vel
-                return maxX
+            return maxX
             
             
     def getMonsterAbove(self,monsters):
