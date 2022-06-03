@@ -83,8 +83,8 @@ class DoodleJump():
     def updateplatforms(self, player):
         playerCollider = pygame.Rect(player.x+15, player.y, player.playerRight.get_width()-30,
                                      player.playerRight.get_height())  # Cancel the effect of a long mouth
-        footCollider = pygame.Rect(player.x+10 , player.y+60, player.playerRight.get_width()-20,
-                                     player.playerRight.get_height()-60)
+        # footCollider = pygame.Rect(player.x+10 , player.y+60, player.playerRight.get_width()-20,
+        #                              player.playerRight.get_height()-60)
         # Monster colliders
         if self.danger:
             for m in self.monsters:
@@ -107,7 +107,7 @@ class DoodleJump():
             springRect = pygame.Rect(p.x + p.spring_x + 10, p.y - 20, p.spring.get_width(), p.spring.get_height())
             p.spring_used = False  # spring init
 
-            if rect.colliderect(footCollider) and player.gravity > 3.0 and player.y < (p.y - self.camera):
+            if rect.colliderect(playerCollider) and player.gravity > 0 and player.y < (p.y - self.camera):
                 # jump when landing on green or blue
                 if p.kind != 2 and player.alive == True:
                     player.jump = 20
@@ -117,7 +117,7 @@ class DoodleJump():
                     p.broken = True
 
             # on springs
-            if (p.hasSpring == True and springRect.colliderect(footCollider) and player.gravity > 3.0 and player.y < (
+            if (p.hasSpring == True and springRect.colliderect(playerCollider) and player.gravity > 3.0 and player.y < (
                     p.y - self.camera) and player.alive == True):
                 player.jump = 30
                 player.gravity = 0
@@ -454,5 +454,5 @@ if __name__ == "__main__":
 
 
     # Play by AI
-    # DoodleJump().ga_train(False)                 # to load a brain, choose True
-    DoodleJump().qlearning_train(10)
+    DoodleJump().ga_train(False)                 # to load a brain, choose True
+    # DoodleJump().qlearning_train(10)
