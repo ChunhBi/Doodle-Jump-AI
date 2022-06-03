@@ -27,7 +27,7 @@ class Monster():
                 self.vel = 0
             elif (chance < 4):
                 self.kind = 1
-                self.vel = 5
+                self.vel = 1
             else:
                 self.kind = 2
                 self.vel = 0
@@ -38,7 +38,7 @@ class Monster():
                 self.vel = 0
             elif (chance < 6):
                 self.kind = 1
-                self.vel = 5
+                self.vel = 2
             else:
                 self.kind = 2
                 self.vel = 0
@@ -49,7 +49,7 @@ class Monster():
                 self.vel = 0
             elif (chance < 8):
                 self.kind = 1
-                self.vel = 8
+                self.vel = 3
             else:
                 self.kind = 2
                 self.vel = 0
