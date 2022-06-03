@@ -3,7 +3,7 @@ import pygame
 import neuralnet as nn
 import numpy as np
 
-INPUT_SIZE = 6
+INPUT_SIZE = 7
 HIDDEN_SIZE = 4
 OUTPUT_SIZE = 2
 
@@ -122,62 +122,68 @@ class Player():
             xPos = 650
         return (xPos,yPos)
         
-    # Ai Part
     def think(self, platforms, monsters):
         coordinatesUp = self.getPlatformAbove(platforms)
         coordinatesDown = self.getPlatformBelow(platforms)
+        coordinateMonster = self.getMonsterAbove(monsters)
         inputs = [0 for i in range(INPUT_SIZE)]
         vision = self.look(platforms)
-        
+        if coordinateMonster == -1:
+            inputs[5] = -114514
+            inputs[6] = -1
+        else:
+            xmonster = coordinateMonster - self.x
+            inputs[5] = abs(xmonster / 600)
+            inputs[6] = 1
+
         inputs[0] = vision[1]
         inputs[1] = vision[2]
         inputs[2] = vision[3]
 
         #inputs.append(self.x/600)                   # Player X value
-        xup=coordinatesUp - 2*self.xvel -self.x
-        xdown = coordinatesDown - 2*self.xvel -self.x
+        xup=coordinatesUp -self.x
+        xdown = coordinatesDown -self.x
         inputs[3] = xup%600 if xup%600<abs(xup%600-600) else xup%600-600         # X value of platform above
         inputs[4] = xdown%600 if xdown%600<abs(xdown%600-600) else xdown%600-600         # X value of platform below
-        inputs[5] = monsters[0].x + monsters[0].vel if len(monsters) !=0  else 0
+
         output = self.brain.feedForward(inputs).tolist()     
 
         index = output.index(max(output))
         if index == 2:
             index = np.random.randint(3)
         return index
-
     # Retrieve X value of platform above player
+
+
     def getPlatformAbove(self,platforms):
-        if self.jump > 5: # moving up, above the player
-            for p in platforms:
-                if (self.startY-80 < p.startY): # above the player
-                    if (p.kind != 2): # not red 
-                        if (abs(p.x + p.vel - self.x) < 400): # not too far
-                            return (p.x + p.vel)
-        else:# falling, below the player
-            maxX = 0
-            for p in platforms:
-                if (self.startY-80 > p.startY):
-                    if (p.kind != 2):
-                        if (abs(p.x + p.vel - self.x) < 300):
-                            maxX = p.x + p.vel
-            return maxX
-    
-    def getMonsterAbove(self,monsters):
-        if len(monsters)==0: return 999
-        if self.jump > 5: # moving up, above the player
-            for p in monsters:
-                if (self.startY < p.startY) and (p.startY - self.startY < 300):
+        for p in platforms:
+            if self.jump > 5:
+                if (self.startY < p.startY):
                     if (p.kind != 2):
                         return (p.x + p.vel)
-                else: return 999 # does not consider it because too far
-        else:# falling, below the player
-            maxX = 0
-            for p in monsters:
-                if (self.startY > p.startY):
-                    if (p.kind != 2):
-                        maxX = p.x + p.vel
-            return maxX
+            else:
+                maxX = 0
+                for p in platforms:
+                    if (self.startY > p.startY):
+                        if (p.kind != 2):
+                            maxX = p.x + p.vel
+                return maxX
+            
+            
+    def getMonsterAbove(self,monsters):
+        for m in monsters:
+            if self.jump > 5:
+                if (self.startY < m.startY):
+                    if (m.kind != 2):
+                        return (m.x + m.vel)
+            else:
+                maxX = 0
+                for m in monsters:
+                    if (self.startY > m.startY):
+                        if (m.kind != 2):
+                            maxX = m.x + m.vel
+                return maxX
+        return -1
             
     # Retrieve X value of platform below player
     def getPlatformBelow(self,platforms):
