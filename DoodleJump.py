@@ -57,6 +57,7 @@ class DoodleJump():
         self.monsters = []
         self.springs = []
         self.player = None
+        self.danger = False #小怪是否危险
 
     def playerUpdate(self, player):
         # Camera follow player when jumping
@@ -84,18 +85,19 @@ class DoodleJump():
                                      player.playerRight.get_height())  # Cancel the effect of a long mouth
 
         # Monster colliders
-        for m in self.monsters:
-            if m.kind == 0:  # blackhole
-                monsteRrect = pygame.Rect(m.x, m.y, m.blackhole.get_width() - 25, m.blackhole.get_height() - 20)
-                if monsteRrect.colliderect(playerCollider) and m.kind != 2:
-                    player.alive = False
-                    # print("die")
+        if self.danger:
+            for m in self.monsters:
+                if m.kind == 0:  # blackhole
+                    monsteRrect = pygame.Rect(m.x, m.y, m.blackhole.get_width() - 25, m.blackhole.get_height() - 20)
+                    if monsteRrect.colliderect(playerCollider) and m.kind != 2:
+                        player.alive = False
+                        # print("die")
 
-            elif m.kind == 1:  # little monster
-                monsteRrect = pygame.Rect(m.x, m.y, m.moveMonster_1.get_width() - 25, m.moveMonster_1.get_height() - 20)
-                if monsteRrect.colliderect(playerCollider) and m.kind != 2:
-                    player.alive = False
-                    # print("die")
+                elif m.kind == 1:  # little monster
+                    monsteRrect = pygame.Rect(m.x, m.y, m.moveMonster_1.get_width() - 25, m.moveMonster_1.get_height() - 20)
+                    if monsteRrect.colliderect(playerCollider) and m.kind != 2:
+                        player.alive = False
+                        # print("die")
 
         # Platform and spring colliders
         for p in self.platforms:
@@ -123,20 +125,21 @@ class DoodleJump():
     # Draw generated platforms and monsters
     def drawplatforms(self):
         # Monsters
-        for m in self.monsters:
-            y = m.y - self.camera
-            if y > H:
-                self.monsters.pop(0)
-            if m.kind == 1:
-                m.monsterMovement(self.score)
+        if self.danger:
+            for m in self.monsters:
+                y = m.y - self.camera
+                if y > H:
+                    self.monsters.pop(0)
+                if m.kind == 1:
+                    m.monsterMovement(self.score)
 
-            if m.kind == 0:  # blackhole
-                self.screen.blit(m.blackhole, (m.x, m.y - self.camera))
-            elif m.kind == 1:  # moving little monster
-                if m.monsterDirection == 0:
-                    self.screen.blit(m.moveMonster_1, (m.x, m.y - self.camera))
-                else:
-                    self.screen.blit(m.moveMonster_2, (m.x, m.y - self.camera))
+                if m.kind == 0:  # blackhole
+                    self.screen.blit(m.blackhole, (m.x, m.y - self.camera))
+                elif m.kind == 1:  # moving little monster
+                    if m.monsterDirection == 0:
+                        self.screen.blit(m.moveMonster_1, (m.x, m.y - self.camera))
+                    else:
+                        self.screen.blit(m.moveMonster_2, (m.x, m.y - self.camera))
         # Platforms
         for p in self.platforms:
             y = p.y - self.camera
@@ -178,23 +181,24 @@ class DoodleJump():
 
             while y > -70:
                 p = Platform.Platform()
-                m = monster.Monster()
                 p.getKind(self.score)  # 0
                 p.checkSpring()
                 p.y = y
                 p.startY = start
                 self.platforms.append(p)
-                m.getKind(self.score)  # 0
-                m.y = y
-                m.startY = start
-                self.monsters.append(m)
+                if self.danger:
+                    m = monster.Monster()
+                    m.getKind(self.score)  # 0
+                    m.y = y
+                    m.startY = start
+                    self.monsters.append(m)
 
                 y -= 30  # Generate every 50 pixels
                 start += 30
                 self.startY = start
         else:
             # Creates a platform based on current score
-            m = monster.Monster()
+
             p = Platform.Platform()
 
             # game difficulty（density）
@@ -213,10 +217,12 @@ class DoodleJump():
             self.platforms.append(p)
 
             # get new monsters
-            m.y = self.monsters[-1].y - difficulty
-            m.startY = self.startY
-            m.getKind(self.score)
-            self.monsters.append(m)
+            if self.danger:
+                m = monster.Monster()
+                m.y = self.monsters[-1].y - difficulty
+                m.startY = self.startY
+                m.getKind(self.score)
+                self.monsters.append(m)
 
     def update(self):
         self.drawplatforms()
@@ -238,11 +244,11 @@ class DoodleJump():
     # Run game
     def ga_train(self, load=True):
         clock = pygame.time.Clock()
-        TOTAL = 250  # 250 players
+        TOTAL = 100  # 250 players
         savedDoodler = []
         GA = ga.GeneticAlgorithm()
         if load:
-            loadbrain = open("latestbrain.txt", "r")
+            loadbrain = open("highestbrain.txt", "r")
             brainloaded = self.loadFtxt(loadbrain, 6, 4, 3)
             doodler = GA.populate(TOTAL, brainloaded)
         else:
@@ -308,6 +314,10 @@ class DoodleJump():
 
             if self.score > highestScore:  # update score
                 highestScore = self.score
+                highest = open("highestbrain.txt","w")
+                nbestdoodler = savedDoodler[len(savedDoodler)-1]
+                highest.write(str([nbestdoodler.brain.weights1,nbestdoodler.brain.weights2,nbestdoodler.brain.bias1,nbestdoodler.brain.bias2])+'\n')
+                highest.close()
 
             self.screen.blit(self.font.render("Count: " + str(len(doodler)), -1, (0, 0, 0)), (25, 120))
             self.screen.blit(self.font.render("High Score: " + str(highestScore), -1, (0, 0, 0)), (25, 90))
@@ -446,5 +456,5 @@ if __name__ == "__main__":
 
 
     # Play by AI
-    #DoodleJump().ga_train(True)                 # to load a brain, choose True
-    DoodleJump().qlearning_train(10)
+    DoodleJump().ga_train(False)                 # to load a brain, choose True
+    # DoodleJump().qlearning_train(10)

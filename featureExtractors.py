@@ -40,9 +40,9 @@ class DoodleExtractor(FeatureExtractor):
         coordinatesDown = player.getPlatformBelow(platforms)
 
         feats = util.Counter()
-        # feats['inputs[0]'] = vision[1]
-        # feats['inputs[1]'] = vision[2]
-        # feats['inputs[2]'] = vision[3]
+        feats['inputs[0]'] = vision[1]
+        feats['inputs[1]'] = vision[2]
+        feats['inputs[2]'] = vision[3]
 
         xup = coordinatesUp - player.x
         xdown = coordinatesDown - player.x
