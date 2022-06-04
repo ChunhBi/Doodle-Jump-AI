@@ -14,12 +14,16 @@ class GeneticAlgorithm():
         self.bestFitness = 0
 
     def populate(self, total, bestBrain):
+
+        def myrand():
+            a=random.randint(0, 100)
+            return 0 if a<60 else (1 if a <90 else 2)
         
         if (bestBrain is None):
             for i in range(total):
                 self.doodler.append(Player.Player(nn.NeuralNetwork(Player.INPUT_SIZE,Player.HIDDEN_SIZE,Player.OUTPUT_SIZE)))  #人物添加
         else:
-            historicalbrain = self.loadFtxt("highestbrain.txt",Player.INPUT_SIZE,Player.HIDDEN_SIZE,Player.OUTPUT_SIZE)
+            historicalbrain = self.loadFtxt("highestbrain.txt",Player.INPUT_SIZE,Player.HIDDEN_SIZE,Player.OUTPUT_SIZE)[myrand()]
             # 考虑要不要让历史最高分的brain有一定权重
             for i in range(total):
                 choice = random.randint(0, 3)
@@ -115,11 +119,21 @@ class GeneticAlgorithm():
         # print(strr)
         l = eval(strr)
         f.close()
-        cloneBrain = nn.NeuralNetwork(inputnodes, hiddennodes, outputnodes)
-        cloneBrain.weights1 = l[0]
-        cloneBrain.weights2 = l[1]
-        cloneBrain.bias1 = l[2]
-        cloneBrain.bias2 = l[3]
-        return cloneBrain
+        cloneBrain0 = nn.NeuralNetwork(inputnodes, hiddennodes, outputnodes)
+        cloneBrain0.weights1 = l[0][0]
+        cloneBrain0.weights2 = l[0][1]
+        cloneBrain0.bias1 = l[0][2]
+        cloneBrain0.bias2 = l[0][3]
+        cloneBrain1 = nn.NeuralNetwork(inputnodes, hiddennodes, outputnodes)
+        cloneBrain1.weights1 = l[1][0]
+        cloneBrain1.weights2 = l[1][1]
+        cloneBrain1.bias1 = l[1][2]
+        cloneBrain1.bias2 = l[1][3]
+        cloneBrain2 = nn.NeuralNetwork(inputnodes, hiddennodes, outputnodes)
+        cloneBrain2.weights1 = l[2][0]
+        cloneBrain2.weights2 = l[2][1]
+        cloneBrain2.bias1 = l[2][2]
+        cloneBrain2.bias2 = l[2][3]
+        return [cloneBrain0,cloneBrain1,cloneBrain2]
 
 

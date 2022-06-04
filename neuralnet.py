@@ -52,10 +52,10 @@ class NeuralNetwork():
             newbrain = self.copy()
             newdict={"weights1":newbrain.weights1,"weights2":newbrain.weights2,"bias1":newbrain.bias1,"bias2":newbrain.bias2}
             if elem in ["weights1", "weights2"]:
-                newdict[elem]+=(np.random.normal(0,100,np.shape(newdict[elem])))
+                newdict[elem]+=(np.random.normal(0,10,np.shape(newdict[elem])))
             elif elem in ["bias1", "bias2"]:
                 for i in newdict[elem]:
-                    i+=np.random.normal(0,100)
+                    i+=np.random.normal(0,10)
             else:
                 pass
             return newbrain

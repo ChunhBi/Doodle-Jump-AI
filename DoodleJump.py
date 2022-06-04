@@ -247,7 +247,7 @@ class DoodleJump():
         GA = ga.GeneticAlgorithm()
         if load:
             loadbrain = open("highestbrain.txt", "r")
-            brainloaded = self.loadFtxt(loadbrain, Player.INPUT_SIZE, Player.HIDDEN_SIZE, Player.OUTPUT_SIZE)
+            brainloaded = self.loadFtxt(loadbrain, Player.INPUT_SIZE, Player.HIDDEN_SIZE, Player.OUTPUT_SIZE)[0]
 
             doodler = GA.populate(TOTAL, brainloaded)
             loadbrain.close()
@@ -316,8 +316,10 @@ class DoodleJump():
                 highestScore = self.score
                 if len(savedDoodler) != 0:
                     highest = open("highestbrain.txt","w")
-                    nbestdoodler = savedDoodler[len(savedDoodler)-1]
-                    highest.write(str([nbestdoodler.brain.weights1,nbestdoodler.brain.weights2,nbestdoodler.brain.bias1,nbestdoodler.brain.bias2])+'\n')
+                    nbestdoodler = savedDoodler[-3:]
+                    highest.write("["+str([nbestdoodler[0].brain.weights1,nbestdoodler[0].brain.weights2,nbestdoodler[0].brain.bias1,nbestdoodler[0].brain.bias2])+','\
+                        +str([nbestdoodler[1].brain.weights1,nbestdoodler[1].brain.weights2,nbestdoodler[1].brain.bias1,nbestdoodler[1].brain.bias2])+','\
+                        +str([nbestdoodler[2].brain.weights1,nbestdoodler[2].brain.weights2,nbestdoodler[2].brain.bias1,nbestdoodler[2].brain.bias2])+']')
                     highest.close()
 
             self.screen.blit(self.font.render("Count: " + str(len(doodler)), -1, (0, 0, 0)), (25, 120))
@@ -358,7 +360,7 @@ class DoodleJump():
 
     def qlearning_train(self, maxGeneration = 100):
         loadbrain = open("latestbrain.txt", "r")
-        brainloaded = self.loadFtxt(loadbrain, 6, 4, 3)
+        brainloaded = self.loadFtxt(loadbrain, 6, 4, 3)[0]
         clock = pygame.time.Clock()
         self.player = Player.Player(brainloaded)
         doodler = self.player
