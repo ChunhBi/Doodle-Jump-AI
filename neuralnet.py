@@ -1,7 +1,8 @@
 from turtle import clone
 import numpy as np
 import random
-
+import copy
+import Player
 
 class NeuralNetwork():
 
@@ -47,26 +48,31 @@ class NeuralNetwork():
 
     def normalchange(self, elem:str, mat=None):
         tempdict = {"weights1":self.weights1,"weights2":self.weights2,"bias1":self.bias1,"bias2":self.bias2}
-        if np.shape(tempdict[elem]) != np.shape(mat):
-            return self
-        else:
+        if mat == None:
             newbrain = self.copy()
             newdict={"weights1":newbrain.weights1,"weights2":newbrain.weights2,"bias1":newbrain.bias1,"bias2":newbrain.bias2}
             if elem in ["weights1", "weights2"]:
-                newdict[elem]+=(np.random.normal(0,10,np.shape(newdict[elem])))
+                newdict[elem]+=(np.random.normal(0,100,np.shape(newdict[elem])))
             elif elem in ["bias1", "bias2"]:
                 for i in newdict[elem]:
-                    i+=np.random.normal(0,10)
+                    i+=np.random.normal(0,100)
             else:
                 pass
             return newbrain
+        else:
+            if np.shape(tempdict[elem]) != np.shape(mat):
+                return self
+            else:
+                pass
+            return self
+        
 
     def copy(self):
         newbrain = NeuralNetwork(Player.INPUT_SIZE,Player.HIDDEN_SIZE,Player.OUTPUT_SIZE)
-        newbrain.bias1 = self.bias1.copy()
-        newbrain.bias2 = self.bias2.copy()
-        newbrain.weights1 = self.weights1.copy()
-        newbrain.weights2 = self.weights2.copy()
+        newbrain.bias1 = copy.deepcopy(self.bias1)
+        newbrain.bias2 = copy.deepcopy(self.bias2)
+        newbrain.weights1 = copy.deepcopy(self.weights1)
+        newbrain.weights2 = copy.deepcopy(self.weights2)
         return newbrain
 
     # Activation functions
