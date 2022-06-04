@@ -169,6 +169,7 @@ class Player():
                         if (abs(p.x + p.vel - self.x) < 300):
                             maxX = p.x + p.vel
             return maxX
+        return -1
     
     def getPlatformsPossible(self,platforms,candidateNum):
         returnPlatforms = []
