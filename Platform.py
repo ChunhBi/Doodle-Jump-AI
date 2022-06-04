@@ -1,6 +1,8 @@
 import pygame 
 import random
 
+def setSeed(seed):
+    random.seed(seed)
 class Platform():
 
     def __init__ (self):
@@ -74,8 +76,6 @@ class Platform():
         self.g += 0.5
         self.y += self.g
         self.startY -= self.g
-
-
         
 
 
