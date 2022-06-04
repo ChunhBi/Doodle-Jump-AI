@@ -21,7 +21,6 @@ class Player():
         self.direction = 0          # direction facing; 0 is right; 1 is left
         self.xvel = 0
         self.ai = True
-        if brain is None: self.ai = False
         self.brain = brain
         self.jump = 0
         self.gravity = 0
@@ -56,7 +55,6 @@ class Player():
                 if self.xvel < 10:
                     self.xvel += 1
                     self.direction = 0
-
             elif (decision == 1):
                 if self.xvel > -10:
                     self.xvel -= 1
@@ -114,7 +112,7 @@ class Player():
                     xvel -= 1
                 elif xvel < 0:
                     xvel += 1
-        xPos = self.x + 1*xvel
+        xPos = self.x + 2*xvel
         
         # When at the edge of the screen go to the other side
         if xPos > 650:
@@ -161,35 +159,61 @@ class Player():
             for p in platforms:
                 if (self.startY < p.startY): # above the player
                     if (p.kind != 2): # not red 
-                        if (abs(p.x + p.vel - self.x) < 400): # not too far
+                        if (abs(p.x + p.vel - self.x) < 300): # not too far
                             return (p.x + p.vel)
         else:# falling, below the player
             maxX = 0
             for p in platforms:
                 if (self.startY > p.startY):
                     if (p.kind != 2):
-                        if (abs(p.x + p.vel - self.x) < 400):
+                        if (abs(p.x + p.vel - self.x) < 300):
                             maxX = p.x + p.vel
             return maxX
     
     def getPlatformsPossible(self,platforms,candidateNum):
         returnPlatforms = []
+        tmpCandidates = []
         if self.jump > 5: # moving up, above the player
+            maxHeight = self.jump*self.jump/2
             for p in platforms:
-                if (self.startY < p.startY): # above the player
-                    if (p.kind != 2): # not red 
-                        if (abs(p.x + p.vel - self.x) < 400): # not too far
-                            returnPlatforms.append(p.x + p.vel)
-                            if len(returnPlatforms)==candidateNum: break
+                if (p.kind == 2): continue
+                if (self.startY >= p.startY):
+                    if (abs(p.x - self.x) < 400):
+                        tmpCandidates.append(p.x)
+                elif (self.startY < p.startY): # above the player
+                    if (self.startY + maxHeight < p.startY): break
+                    isRight = (p.x - self.x) > 0
+                    farestDist = self.jump*(self.xvel*2+self.jump*isRight) # when at highest must reach
+                    if (abs(p.x - self.x) < abs(farestDist)): # not too far
+                        returnPlatforms.append(p.x + p.vel)
+                        if len(returnPlatforms)==candidateNum: break
+            # if no reachable platforms above, return those below
+            if len(returnPlatforms)==0: 
+                if len(tmpCandidates)==0: return[0]
+                return tmpCandidates[-1:-1-candidateNum:-1]
+                # return [0]
             return returnPlatforms
         else:# falling, below the player
             for p in platforms:
+                if (p.kind == 2): continue
                 if (self.startY > p.startY):
-                    if (p.kind != 2):
-                        if (abs(p.x + p.vel - self.x) < 400):
-                            returnPlatforms.append(p.x + p.vel)
-            if len(returnPlatforms)==0: return[0]
-            return returnPlatforms[-1:-1-candidateNum:-1]
+                    if (abs(p.x - self.x) < 300):
+                        tmpCandidates.append(p.x + p.vel)
+                else: break # platforms after are above
+            if len(tmpCandidates)==0: return[0]
+            return tmpCandidates[-1:-1-candidateNum:-1]
+            
+    def getPlatformsSafe(self,platforms,candidateNum):
+        tmpCandidates = []
+        for p in platforms:
+            if (p.kind == 2): continue
+            if (self.startY > p.startY):
+                if (abs(p.x - self.x) < 300):
+                    tmpCandidates.append(p.x + p.vel)
+            else: break
+        if len(tmpCandidates)==0: return[0]
+        return tmpCandidates[-1:-1-candidateNum:-1]
+
 
     def getMonsterAbove(self,monsters):
         for m in monsters:

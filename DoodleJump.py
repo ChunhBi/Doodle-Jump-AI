@@ -327,6 +327,7 @@ class DoodleJump():
     def play(self):
         clock = pygame.time.Clock()
         doodler = Player.Player()
+        doodler.ai = False
 
         run = True  # start game
         self.generateplatforms(True)
@@ -356,14 +357,14 @@ class DoodleJump():
             pygame.display.update()
 
     def qlearning_train(self, maxGeneration = 100):
-        loadbrain = open("latestbrain.txt", "r")
-        brainloaded = self.loadFtxt(loadbrain, 6, 4, 3)
+        # loadbrain = open("latestbrain.txt", "r")
+        # brainloaded = self.loadFtxt(loadbrain, 6, 4, 3)
         clock = pygame.time.Clock()
-        self.player = Player.Player(brainloaded)
+        self.player = Player.Player()
         doodler = self.player
         def getLegalAction(state): return [0,1,2]
         # 0 is right, 1 is left, 2 is middle
-        opts = {'actionFn': getLegalAction,'epsilon':0.05,'gamma':1.0,'alpha':0.2}
+        opts = {'actionFn': getLegalAction,'epsilon':0.0,'gamma':1.0,'alpha':0.3}
         qAgent = agent.ApproximateQAgent(extractor='DoodleExtractor',**opts)
 
         run = True  # start game

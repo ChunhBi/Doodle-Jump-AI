@@ -1,7 +1,7 @@
 from turtle import clone
 import numpy as np
 import random
-
+import Player
 
 class NeuralNetwork():
 
