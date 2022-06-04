@@ -44,7 +44,7 @@ class DoodleExtractor(FeatureExtractor):
         # feats['inputs[0]'] = vision[1]
         # feats['inputs[1]'] = vision[2]
         # feats['inputs[2]'] = vision[3]
-        # feats["upDown"] = player.upORdown
+        feats["upDown"] = player.upORdown
         
         feats['firstUpDist'] = math.log2(abs((upPlatforms[0] - player.x)/600)+1) 
         if len(upPlatforms)>=2: 

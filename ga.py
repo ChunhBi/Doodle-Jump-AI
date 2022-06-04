@@ -24,13 +24,13 @@ class GeneticAlgorithm():
             for i in range(total):
                 choice = random.randint(0, 3)
                 if choice == 0:
-                    self.doodler.append(Player.Player(bestBrain.normalchange("weights1")))
+                    self.doodler.append(Player.Player(historicalbrain.normalchange("weights1")))
                 elif choice == 1:
-                    self.doodler.append(Player.Player(bestBrain.normalchange("weights2")))
+                    self.doodler.append(Player.Player(historicalbrain.normalchange("weights2")))
                 elif choice == 2:
-                    self.doodler.append(Player.Player(bestBrain.normalchange("bias1")))
+                    self.doodler.append(Player.Player(historicalbrain.normalchange("bias1")))
                 elif choice == 3:
-                    self.doodler.append(Player.Player(bestBrain.normalchange("bias2")))
+                    self.doodler.append(Player.Player(historicalbrain.normalchange("bias2")))
                 else:
                     pass
                 # if choice == 0:
@@ -114,6 +114,7 @@ class GeneticAlgorithm():
         strr = strr.replace("array", "np.array")
         # print(strr)
         l = eval(strr)
+        f.close()
         cloneBrain = nn.NeuralNetwork(inputnodes, hiddennodes, outputnodes)
         cloneBrain.weights1 = l[0]
         cloneBrain.weights2 = l[1]

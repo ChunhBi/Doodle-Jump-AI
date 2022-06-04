@@ -30,7 +30,7 @@ class Platform():
                 self.kind = 0            
             elif (chance < 95):               # 10% chance to get red or blue 
                 self.kind = 1  
-                self.vel = 5                 
+                self.vel = 2
             else:
                 self.kind = 2  
         elif (score < 10000):
@@ -38,7 +38,7 @@ class Platform():
                 self.kind = 0            
             elif (chance < 95):               # 20% chance to get blue 
                 self.kind = 1   
-                self.vel = 5                
+                self.vel = 3
             else:
                 self.kind = 2 
         else:
@@ -46,7 +46,7 @@ class Platform():
                 self.kind = 0            
             elif (chance < 95):               # 40% chance to get blue 
                 self.kind = 1  
-                self.vel = 8                 
+                self.vel = 5
             else:
                 self.kind = 2                   # 10% chance to get red
 

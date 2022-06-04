@@ -250,6 +250,7 @@ class DoodleJump():
             brainloaded = self.loadFtxt(loadbrain, Player.INPUT_SIZE, Player.HIDDEN_SIZE, Player.OUTPUT_SIZE)
 
             doodler = GA.populate(TOTAL, brainloaded)
+            loadbrain.close()
         else:
             doodler = GA.populate(TOTAL, None)
 
@@ -313,8 +314,8 @@ class DoodleJump():
 
             if self.score > highestScore:  # update score
                 highestScore = self.score
-                highest = open("highestbrain.txt","w")
                 if len(savedDoodler) != 0:
+                    highest = open("highestbrain.txt","w")
                     nbestdoodler = savedDoodler[len(savedDoodler)-1]
                     highest.write(str([nbestdoodler.brain.weights1,nbestdoodler.brain.weights2,nbestdoodler.brain.bias1,nbestdoodler.brain.bias2])+'\n')
                     highest.close()
@@ -457,5 +458,5 @@ if __name__ == "__main__":
 
 
     # Play by AI
-    #DoodleJump().ga_train(False)                 # to load a brain, choose True
-    DoodleJump().qlearning_train(10)
+    DoodleJump().ga_train(False)                 # to load a brain, choose True
+    # DoodleJump().qlearning_train(10)
