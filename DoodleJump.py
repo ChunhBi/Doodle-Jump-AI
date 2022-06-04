@@ -1,5 +1,4 @@
 import pygame
-import random
 import numpy as np
 import Platform
 import neuralnet as nn
@@ -367,7 +366,7 @@ class DoodleJump():
         doodler = self.player
         def getLegalAction(state): return [0,1,2]
         # 0 is right, 1 is left, 2 is middle
-        opts = {'actionFn': getLegalAction,'epsilon':0.0,'gamma':1.0,'alpha':0.3}
+        opts = {'actionFn': getLegalAction,'epsilon':0.0,'gamma':1.0,'alpha':0.1}
         qAgent = agent.ApproximateQAgent(extractor='DoodleExtractor',**opts)
 
         run = True  # start game
@@ -375,6 +374,7 @@ class DoodleJump():
         doodleState = DoodleState()
         
         for geneNum in range(maxGeneration):
+            Platform.setSeed(randseed)
             if run == False: break
             self.camera = 0
             self.time = time.time()
@@ -460,5 +460,5 @@ if __name__ == "__main__":
 
 
     # Play by AI
-    DoodleJump().ga_train(False)                 # to load a brain, choose True
-    # DoodleJump().qlearning_train(10)
+    # DoodleJump().ga_train(False)                 # to load a brain, choose True
+    DoodleJump().qlearning_train(10,randseed = 111)

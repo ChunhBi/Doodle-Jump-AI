@@ -14,7 +14,6 @@
 
 "Feature extractors for Pacman game states"
 
-from os import stat
 import pygame
 import DoodleJump
 import util
