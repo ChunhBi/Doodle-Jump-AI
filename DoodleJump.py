@@ -56,7 +56,7 @@ class DoodleJump():
         self.monsters = []
         self.springs = []
         self.player = None
-        self.danger = False  #小怪是否危险
+        self.danger = False  # if monster danger
 
     def playerUpdate(self, player):
         # Camera follow player when jumping
