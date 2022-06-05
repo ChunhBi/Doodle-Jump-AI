@@ -38,13 +38,17 @@ class DoodleExtractor(FeatureExtractor):
         vision = player.look(platforms)
         upPlatforms = player.getPlatformsPossible(platforms, 2)
         coordinatesDown = player.getPlatformsSafe(platforms, 2)
+        coordinateMonster = player.getMonsterAbove(monsters)
 
         feats = util.Counter()
-        # feats['inputs[0]'] = vision[1]
-        # feats['inputs[1]'] = vision[2]
-        # feats['inputs[2]'] = vision[3]
-        feats["upDown"] = player.upORdown
-        
+        # feats['upDown'] = player.upORdown
+        # if coordinateMonster == -1:
+        #     feats['monLoc'] = -1
+        #     feats['ifMonExist'] = -1
+        # else:
+        #     xmonster = coordinateMonster - player.x
+        #     feats['monLoc'] = abs(xmonster / 600)
+        #     feats['ifMonExist'] = 1
         feats['firstUpDist'] = math.log2(abs((upPlatforms[0] - player.x)/600)+1) 
         if len(upPlatforms)>=2: 
           feats['secondUpDist'] = math.log2(abs((upPlatforms[1] - player.x)/600)+1) 

@@ -56,7 +56,7 @@ class DoodleJump():
         self.monsters = []
         self.springs = []
         self.player = None
-        self.danger = False #小怪是否危险
+        self.danger = False  #小怪是否危险
 
     def playerUpdate(self, player):
         # Camera follow player when jumping
@@ -461,4 +461,4 @@ if __name__ == "__main__":
 
     # Play by AI
     DoodleJump().ga_train(False)                 # to load a brain, choose True
-    # DoodleJump().qlearning_train(maxGeneration=10,randseed = 111)
+    #DoodleJump().qlearning_train(maxGeneration=10,randseed = 111)
