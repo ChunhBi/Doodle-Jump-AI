@@ -358,7 +358,7 @@ class DoodleJump():
 
             pygame.display.update()
 
-    def qlearning_train(self, maxGeneration = 100, randseed=111):
+    def qlearning_train(self, maxGeneration = 100, randseed=111, same_ga = False):
         # loadbrain = open("latestbrain.txt", "r")
         # brainloaded = self.loadFtxt(loadbrain, 6, 4, 3)[0]
         clock = pygame.time.Clock()
@@ -374,7 +374,7 @@ class DoodleJump():
         doodleState = DoodleState()
         
         for geneNum in range(maxGeneration):
-            Platform.setSeed(randseed)
+            if same_ga: Platform.setSeed(randseed)
             if run == False: break
             self.camera = 0
             self.time = time.time()
@@ -461,4 +461,4 @@ if __name__ == "__main__":
 
     # Play by AI
     # DoodleJump().ga_train(False)                 # to load a brain, choose True
-    DoodleJump().qlearning_train(maxGeneration=10,randseed = 1)
+    DoodleJump().qlearning_train(maxGeneration=10,randseed = 1,same_ga=False)
