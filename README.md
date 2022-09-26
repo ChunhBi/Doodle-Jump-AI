@@ -1,6 +1,6 @@
-# Doodle-Jump-AI
+# Doodle-Jump-AI for CS181 Final Project
 
-Created a Doodle Jump clone and implemented an AI to beat the game. AI is trained through a genetic algorithm that optimizes weights and biases of the Neural Network.
+Modified and optimized the original work of EthanBautista, added reinforcement learning method for AI training.
 
 ![](DoodleJump.gif)
 
